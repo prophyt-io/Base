@@ -4,3 +4,7 @@
 /Ralph-Wiggum
 /docs
 CLAUDE.md
+
+# Windows Zone Identifier files (from WSL)
+*:Zone.Identifier
+*Zone.Identifier
