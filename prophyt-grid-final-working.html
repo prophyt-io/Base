@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prophyt - Grid Trading Simulator</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background: #0a0e14;
+      color: #e6edf3;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chart-container {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .stats-hud {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(18, 23, 31, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 16px 20px;
+      font-size: 0.85rem;
+      z-index: 50;
+      min-width: 240px;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .stat-row:last-child {
+      border-bottom: none;
+    }
+
+    .stat-label {
+      color: #8b949e;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .stat-value {
+      color: #00ff88;
+      font-weight: 700;
+    }
+
+    .stat-value.negative {
+      color: #ff3366;
+    }
+
+    .instructions {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 255, 136, 0.1);
+      border: 1px solid #00ff88;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 0.8rem;
+      color: #00ff88;
+      text-align: center;
+      z-index: 50;
+    }
+
+    .notification {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: #00ff88;
+      color: #0a0e14;
+      padding: 40px 60px;
+      border-radius: 16px;
+      font-size: 2.5rem;
+      font-weight: 800;
+      box-shadow: 0 20px 60px rgba(0, 255, 136, 0.6);
+      z-index: 200;
+      pointer-events: none;
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      text-align: center;
+    }
+
+    .notification.show {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+
+    .notification-label {
+      font-size: 1rem;
+      opacity: 0.8;
+      margin-bottom: 8px;
+    }
+
+    .particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    .particle {
+      position: absolute;
+      font-size: 1.5rem;
+      font-weight: 800;
+      pointer-events: none;
+      animation: particleFloat 1.2s ease-out forwards;
+    }
+
+    @keyframes particleFloat {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-80px) scale(1.3);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="chart-container">
+    <canvas id="chart"></canvas>
+    <div class="particles" id="particles"></div>
+    
+    <div class="stats-hud">
+      <div class="stat-row">
+        <span class="stat-label">Position</span>
+        <span class="stat-value" id="position">$0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Avg Entry</span>
+        <span class="stat-value" id="avgEntry">—</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Shares</span>
+        <span class="stat-value" id="shares">0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Exit Target</span>
+        <span class="stat-value" id="exitTarget">—</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">P/L</span>
+        <span class="stat-value" id="pnl">$0.00</span>
+      </div>
+    </div>
+
+    <div class="instructions">
+      🖱️ SCROLL to control price • Green lines = Buy • Red line = Exit
+    </div>
+
+    <div class="notification" id="notification">
+      <div class="notification-label">POSITION CLOSED</div>
+      <div id="notificationAmount">+$0.00</div>
+    </div>
+  </div>
+
+  <script>
+    class TradingChart {
+      constructor() {
+        this.canvas = document.getElementById('chart');
+        this.ctx = this.canvas.getContext('2d');
+        this.particles = document.getElementById('particles');
+        
+        // Initialize canvas dimensions FIRST
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+        
+        // Proper proportions
+        this.candleWidth = 10;
+        this.candleSpacing = 4;
+        this.candleUnit = this.candleWidth + this.candleSpacing;
+        
+        // Chart positioning already set by resize()
+        
+        // Price settings with spring animation
+        this.currentPrice = 690;
+        this.targetPrice = 690; // Target for smooth scrolling
+        this.lastClosePrice = 690;
+        this.priceBuffer = 18; // ±$18 visible range (half of 35)
+        this.springFactor = 0.2; // Spring animation speed
+        
+        // Spring-animated axis center (reduces jitter)
+        this.axisCenterDisplay = 690; // Smoothly animated center of visible range
+        this.axisCenterTarget = 690; // Where axis should move to
+        this.axisSpringFactor = 0.15; // Slower spring for stability
+        
+        // Spring-animated line positions
+        this.avgEntryDisplay = 0; // Smoothly animated display value
+        this.exitPriceDisplay = 0; // Smoothly animated display value
+        this.lineSpringFactor = 0.25; // Slightly faster than price
+        
+        // Fixed scroll sensitivity
+        this.scrollMultiplier = 0.015;
+        
+        // Candles
+        this.candles = [];
+        this.currentCandle = null;
+        this.candleOffset = 0;
+        
+        // State management
+        this.isScrolling = false;
+        this.scrollTimeout = null;
+        
+        // Auto-play timing - 2X FASTER (was 4x, now reduced by half)
+        this.lastFrameTime = Date.now();
+        this.timeSinceLastCandle = 0;
+        this.candleInterval = 120; // Generate new candle every 120ms (2x faster)
+        
+        // Trading with dynamic levels
+        this.position = [];
+        this.totalInvested = 0;
+        this.totalShares = 0;
+        this.avgEntry = 0;
+        this.exitPrice = 0;
+        this.gridSpacing = 2;
+        this.referencePrice = 690;
+        this.gridReferencePrice = 690; // Track where grid is centered
+        this.buyLevels = [];
+        this.boughtLevels = new Set();
+        this.filledLevels = new Set();
+        
+        // Dynamic level tracking
+        this.lowestBuyLevel = 0;
+        this.highestBuyLevel = 0;
+        this.lastExitPrice = 0;
+        
+        this.generateBuyLevels(this.referencePrice, 40); // Start with 40 levels (4x)
+        this.generateInitialCandles();
+        this.animate();
+      }
+
+      resize() {
+        this.canvas.width = this.canvas.offsetWidth;
+        this.canvas.height = this.canvas.offsetHeight;
+        this.candleStopX = this.canvas.width * 0.33;
+        this.priceAxisX = this.canvas.width - 70;
+      }
+
+      generateBuyLevels(startPrice, count) {
+        // Generate buy levels below startPrice
+        for (let i = 1; i <= count; i++) {
+          const level = startPrice - (i * this.gridSpacing);
+          if (!this.buyLevels.includes(level)) {
+            this.buyLevels.push(level);
+          }
+        }
+        
+        // Sort levels descending (highest first)
+        this.buyLevels.sort((a, b) => b - a);
+        
+        // Update trackers
+        if (this.buyLevels.length > 0) {
+          this.highestBuyLevel = this.buyLevels[0];
+          this.lowestBuyLevel = this.buyLevels[this.buyLevels.length - 1];
+        }
+      }
+      
+      generateLevelsBelow(count) {
+        // Generate more levels below the current lowest
+        if (this.lowestBuyLevel === 0) return;
+        
+        for (let i = 1; i <= count; i++) {
+          const level = this.lowestBuyLevel - (i * this.gridSpacing);
+          this.buyLevels.push(level);
+        }
+        
+        // Update lowest tracker
+        this.buyLevels.sort((a, b) => b - a);
+        this.lowestBuyLevel = this.buyLevels[this.buyLevels.length - 1];
+      }
+      
+      generateLevelsAbove(count) {
+        // Generate more levels above the current highest
+        if (this.highestBuyLevel === 0) return;
+        
+        for (let i = 1; i <= count; i++) {
+          const level = this.highestBuyLevel + (i * this.gridSpacing);
+          if (level < this.referencePrice) { // Don't go above reference
+            this.buyLevels.push(level);
+          }
+        }
+        
+        // Update highest tracker
+        this.buyLevels.sort((a, b) => b - a);
+        if (this.buyLevels.length > 0) {
+          this.highestBuyLevel = this.buyLevels[0];
+        }
+      }
+      
+      regenerateGridAtCurrentPosition() {
+        // Clear old grid and generate new one based on current position
+        this.buyLevels = [];
+        this.boughtLevels.clear();
+        this.filledLevels.clear();
+        
+        // Set new reference $20 below current position (safe distance)
+        const safeDistance = 20;
+        this.gridReferencePrice = this.currentPrice - safeDistance;
+        
+        // Generate grid below the safe reference point
+        this.generateBuyLevels(this.gridReferencePrice - 2, 40);
+        // First level will be at currentPrice - 22
+      }
+
+      generateInitialCandles() {
+        const numCandles = Math.floor(this.candleStopX / this.candleUnit) + 2;
+        let price = this.currentPrice;
+        
+        for (let i = 0; i < numCandles; i++) {
+          const candle = this.generateRandomCandle(price);
+          this.candles.push(candle);
+          price = candle.close;
+        }
+        
+        this.lastClosePrice = price;
+        this.currentPrice = price;
+      }
+
+      generateRandomCandle(prevClose) {
+        const open = prevClose;
+        const volatility = 0.7; // Increased for more varied movement
+        const referencePrice = 690;
+        
+        // Mean reversion - pull back toward reference if drifting too far
+        let bias = -0.45; // Slight upward bias
+        if (open < 688) {
+          bias = -0.6; // Strong upward pull if too low
+        } else if (open > 692) {
+          bias = -0.3; // Weak upward pull if too high (let it drift down)
+        }
+        
+        const change = (Math.random() + bias) * volatility;
+        const close = open + change;
+        
+        const high = Math.max(open, close) + Math.random() * 0.3;
+        const low = Math.min(open, close) - Math.random() * 0.3;
+        
+        return {
+          open,
+          high,
+          low,
+          close,
+          bullish: close >= open
+        };
+      }
+
+      handleWheel(deltaY) {
+        // FIXED DISTANCE SCROLL - but to TARGET (spring animation)
+        const priceChange = deltaY * this.scrollMultiplier;
+        
+        if (!this.isScrolling) {
+          // Start scrolling mode
+          this.isScrolling = true;
+          // Set initial target to current price
+          this.targetPrice = this.currentPrice;
+          this.currentCandle = {
+            open: this.currentPrice,
+            high: this.currentPrice,
+            low: this.currentPrice,
+            close: this.currentPrice,
+            bullish: true
+          };
+        }
+        
+        // Update TARGET price (not current price directly)
+        this.targetPrice += priceChange;
+        
+        // Reset timeout for stopping scroll
+        clearTimeout(this.scrollTimeout);
+        this.scrollTimeout = setTimeout(() => {
+          this.stopScrolling();
+        }, 150);
+      }
+
+      stopScrolling() {
+        if (!this.isScrolling) return;
+        
+        this.isScrolling = false;
+        
+        // Finalize current candle
+        if (this.currentCandle) {
+          this.candles.push({...this.currentCandle});
+          this.lastClosePrice = this.currentCandle.close;
+          
+          // Check for trades on this candle
+          this.checkCandleForTrades(this.currentCandle);
+          
+          this.currentCandle = null;
+        }
+      }
+
+      update() {
+        const now = Date.now();
+        const deltaTime = now - this.lastFrameTime;
+        this.lastFrameTime = now;
+        
+        // Apply spring animation to currentPrice
+        if (this.isScrolling) {
+          // Smoothly move current price toward target (spring effect)
+          this.currentPrice += (this.targetPrice - this.currentPrice) * this.springFactor;
+          
+          // Update current candle
+          if (this.currentCandle) {
+            this.currentCandle.close = this.currentPrice;
+            this.currentCandle.high = Math.max(this.currentCandle.high, this.currentPrice);
+            this.currentCandle.low = Math.min(this.currentCandle.low, this.currentPrice);
+            this.currentCandle.bullish = this.currentCandle.close >= this.currentCandle.open;
+          }
+        } else {
+          // Auto-play mode - only generate new candles when not scrolling
+          this.timeSinceLastCandle += deltaTime;
+          
+          // Generate new candle periodically
+          if (this.timeSinceLastCandle >= this.candleInterval) {
+            const newCandle = this.generateRandomCandle(this.lastClosePrice);
+            this.candles.push(newCandle);
+            this.lastClosePrice = newCandle.close;
+            this.currentPrice = newCandle.close;
+            this.targetPrice = newCandle.close; // Keep in sync
+            
+            // Increase offset by full candle unit (sliding window)
+            this.candleOffset += this.candleUnit;
+            
+            // When offset reaches a full unit, remove oldest candle
+            while (this.candleOffset >= this.candleUnit) {
+              this.candles.shift();
+              this.candleOffset -= this.candleUnit;
+            }
+            
+            // Check for trades
+            this.checkCandleForTrades(newCandle);
+            
+            this.timeSinceLastCandle = 0;
+          }
+        }
+        
+        // Spring animate the AVG and EXIT line positions
+        if (this.totalShares > 0) {
+          this.avgEntryDisplay += (this.avgEntry - this.avgEntryDisplay) * this.lineSpringFactor;
+          this.exitPriceDisplay += (this.exitPrice - this.exitPriceDisplay) * this.lineSpringFactor;
+        }
+        
+        // Smart axis center updates - only move when price near edges
+        const minVisible = this.axisCenterDisplay - this.priceBuffer;
+        const maxVisible = this.axisCenterDisplay + this.priceBuffer;
+        
+        // Update target if price is getting close to edges (within $10)
+        if (this.currentPrice < minVisible + 10 || this.currentPrice > maxVisible - 10) {
+          this.axisCenterTarget = this.currentPrice;
+        }
+        
+        // Spring animate the axis center
+        this.axisCenterDisplay += (this.axisCenterTarget - this.axisCenterDisplay) * this.axisSpringFactor;
+        
+        // DYNAMIC GRID REPOSITIONING - Grid follows user's position
+        // If user has moved far from grid reference (>$30), regenerate grid at current position
+        if (this.totalShares === 0 && Math.abs(this.currentPrice - this.gridReferencePrice) > 30) {
+          this.regenerateGridAtCurrentPosition();
+        }
+        
+        // Dynamic level generation - infinite grid (4x more levels)
+        if (this.lowestBuyLevel > 0 && this.currentPrice < this.lowestBuyLevel + 10) {
+          // Getting close to bottom, generate more levels below
+          this.generateLevelsBelow(20); // 4x more (was 5, now 20)
+        }
+        
+        if (this.highestBuyLevel > 0 && this.currentPrice > this.highestBuyLevel - 10) {
+          // Scrolling up, generate more levels above
+          this.generateLevelsAbove(20); // 4x more (was 5, now 20)
+        }
+      }
+
+      checkCandleForTrades(candle) {
+        // Check if candle crosses any buy level
+        for (let buyLevel of this.buyLevels) {
+          // Skip if already filled
+          if (this.filledLevels.has(buyLevel)) continue;
+          
+          // Buy if candle LOW touches or crosses BELOW the level
+          if (candle.low <= buyLevel && !this.boughtLevels.has(buyLevel)) {
+            this.executeBuy(buyLevel);
+            this.boughtLevels.add(buyLevel);
+          }
+          
+          // Reset level if price goes back above
+          if (candle.close > buyLevel + 2) {
+            this.boughtLevels.delete(buyLevel);
+          }
+        }
+        
+        // Check exit - if candle HIGH touches or crosses ABOVE exit line
+        if (this.totalShares > 0 && this.exitPrice > 0) {
+          if (candle.high >= this.exitPrice) {
+            this.executeExit();
+          }
+        }
+      }
+
+      executeBuy(price) {
+        // AGGRESSIVE PYRAMIDING: Double position size each level
+        const baseInvestment = 500;
+        const pyramidMultiplier = this.position.length * 1.0; // 100% increase per position (doubles each time)
+        const investment = baseInvestment * (1 + pyramidMultiplier);
+        
+        const shares = investment / price;
+        
+        this.position.push({ price, shares, investment });
+        this.totalInvested += investment;
+        this.totalShares += shares;
+        
+        this.avgEntry = this.totalInvested / this.totalShares;
+        
+        // Exit is fixed $5 above average (keeps it in view and always profitable)
+        this.exitPrice = this.avgEntry + 5;
+        
+        // Initialize display values on first buy (no animation from 0)
+        if (this.position.length === 1) {
+          this.avgEntryDisplay = this.avgEntry;
+          this.exitPriceDisplay = this.exitPrice;
+        }
+        
+        // Mark this level as filled (so it disappears)
+        this.filledLevels.add(price);
+        
+        this.createParticle('▲ +' + shares.toFixed(2), '#00ff88');
+        this.updateStats();
+      }
+
+      executeExit() {
+        const proceeds = this.totalShares * this.exitPrice;
+        const profit = proceeds - this.totalInvested;
+        
+        this.showNotification(profit);
+        
+        // Store exit price for reference
+        this.lastExitPrice = this.exitPrice;
+        
+        // Full reset
+        this.position = [];
+        this.totalInvested = 0;
+        this.totalShares = 0;
+        this.avgEntry = 0;
+        this.exitPrice = 0;
+        this.avgEntryDisplay = 0;
+        this.exitPriceDisplay = 0;
+        this.boughtLevels.clear();
+        this.filledLevels.clear();
+        
+        // IMMEDIATELY regenerate grid with SAFE DISTANCE below current price
+        // This ensures grid is visible but far enough to prevent immediate re-entry
+        this.buyLevels = [];
+        const safeDistance = 20; // $20 buffer
+        this.gridReferencePrice = this.currentPrice - safeDistance;
+        this.generateBuyLevels(this.gridReferencePrice - 2, 40);
+        // First level will be at currentPrice - 22 (safe!)
+        
+        this.updateStats();
+      }
+
+      createParticle(text, color) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.textContent = text;
+        particle.style.color = color;
+        particle.style.left = '35%';
+        particle.style.top = '50%';
+        this.particles.appendChild(particle);
+        setTimeout(() => particle.remove(), 1200);
+      }
+
+      showNotification(profit) {
+        const notification = document.getElementById('notification');
+        const amount = document.getElementById('notificationAmount');
+        
+        amount.textContent = `${profit >= 0 ? '+' : ''}$${profit.toFixed(2)}`;
+        notification.style.background = profit >= 0 ? '#00ff88' : '#ff3366';
+        notification.classList.add('show');
+        
+        setTimeout(() => notification.classList.remove('show'), 2500);
+      }
+
+      updateStats() {
+        document.getElementById('position').textContent = `$${this.totalInvested.toFixed(0)}`;
+        document.getElementById('shares').textContent = this.totalShares.toFixed(4);
+        
+        if (this.totalShares > 0) {
+          document.getElementById('avgEntry').textContent = `$${this.avgEntry.toFixed(2)}`;
+          document.getElementById('exitTarget').textContent = `$${this.exitPrice.toFixed(2)}`;
+          
+          const currentValue = this.totalShares * this.currentPrice;
+          const pnl = currentValue - this.totalInvested;
+          const pnlEl = document.getElementById('pnl');
+          pnlEl.textContent = `${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}`;
+          pnlEl.className = pnl >= 0 ? 'stat-value' : 'stat-value negative';
+        } else {
+          document.getElementById('avgEntry').textContent = '—';
+          document.getElementById('exitTarget').textContent = '—';
+          document.getElementById('pnl').textContent = '$0.00';
+          document.getElementById('pnl').className = 'stat-value';
+        }
+      }
+
+      draw() {
+        const { ctx, canvas } = this;
+        
+        // Clear
+        ctx.fillStyle = '#0a0e14';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Dynamic price range using SMOOTH axis center (reduces jitter)
+        const minPrice = this.axisCenterDisplay - this.priceBuffer;
+        const maxPrice = this.axisCenterDisplay + this.priceBuffer;
+        const priceRange = maxPrice - minPrice;
+        const priceScale = (canvas.height - 80) / priceRange;
+        
+        const priceToY = (price) => {
+          return canvas.height - 40 - ((price - minPrice) * priceScale);
+        };
+        
+        // Draw grid background
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+        ctx.lineWidth = 1;
+        
+        // Horizontal grid lines
+        for (let price = Math.floor(minPrice); price <= Math.ceil(maxPrice); price += 2) {
+          const y = priceToY(price);
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(this.priceAxisX, y);
+          ctx.stroke();
+        }
+        
+        // Vertical grid lines
+        for (let x = 0; x < this.priceAxisX; x += 60) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, canvas.height);
+          ctx.stroke();
+        }
+        
+        // Draw buy levels (green dotted) - skip filled ones
+        ctx.strokeStyle = '#00ff88';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([6, 4]);
+        
+        for (let buyLevel of this.buyLevels) {
+          // Skip if this level has been filled
+          if (this.filledLevels.has(buyLevel)) continue;
+          
+          const y = priceToY(buyLevel);
+          if (y > 0 && y < canvas.height) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(this.priceAxisX, y);
+            ctx.stroke();
+            
+            ctx.fillStyle = '#00ff88';
+            ctx.font = '9px "JetBrains Mono"';
+            ctx.textAlign = 'left';
+            ctx.fillText('BUY', 8, y - 4);
+          }
+        }
+        ctx.setLineDash([]);
+        
+        // Draw average line (cyan dotted) - use display value for smooth animation
+        if (this.totalShares > 0 && this.avgEntryDisplay > 0) {
+          const avgY = priceToY(this.avgEntryDisplay);
+          ctx.strokeStyle = '#00d4ff';
+          ctx.lineWidth = 2;
+          ctx.setLineDash([8, 4]);
+          ctx.beginPath();
+          ctx.moveTo(0, avgY);
+          ctx.lineTo(this.priceAxisX, avgY);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          
+          ctx.fillStyle = '#00d4ff';
+          ctx.font = 'bold 11px "JetBrains Mono"';
+          ctx.textAlign = 'left';
+          ctx.fillText('AVG', 12, avgY - 6);
+        }
+        
+        // Draw exit line (red solid with glow) - use display value for smooth animation
+        if (this.exitPriceDisplay > 0) {
+          const exitY = priceToY(this.exitPriceDisplay);
+          ctx.strokeStyle = '#ff3366';
+          ctx.lineWidth = 2.5;
+          ctx.shadowBlur = 12;
+          ctx.shadowColor = '#ff3366';
+          ctx.beginPath();
+          ctx.moveTo(0, exitY);
+          ctx.lineTo(this.priceAxisX, exitY);
+          ctx.stroke();
+          ctx.shadowBlur = 0;
+          
+          ctx.fillStyle = '#ff3366';
+          ctx.font = 'bold 11px "JetBrains Mono"';
+          ctx.textAlign = 'left';
+          ctx.fillText('EXIT', 12, exitY - 6);
+        }
+        
+        // Draw historical candles
+        const startX = this.candleStopX - (this.candles.length * this.candleUnit) + this.candleOffset;
+        
+        this.candles.forEach((candle, i) => {
+          const x = startX + i * this.candleUnit;
+          if (x > -this.candleUnit && x < this.priceAxisX) {
+            this.drawCandle(ctx, candle, x, priceToY);
+          }
+        });
+        
+        // Draw current candle (forming during scroll)
+        if (this.currentCandle) {
+          this.drawCandle(ctx, this.currentCandle, this.candleStopX, priceToY);
+        }
+        
+        // Draw price labels on right
+        ctx.fillStyle = '#8b949e';
+        ctx.font = '11px "JetBrains Mono"';
+        ctx.textAlign = 'right';
+        
+        for (let price = Math.floor(minPrice); price <= Math.ceil(maxPrice); price += 2) {
+          const y = priceToY(price);
+          ctx.fillText(`$${price.toFixed(0)}`, canvas.width - 8, y + 4);
+        }
+        
+        // Draw current price indicator
+        const currentY = priceToY(this.currentPrice);
+        
+        ctx.strokeStyle = '#00d4ff';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        ctx.moveTo(0, currentY);
+        ctx.lineTo(canvas.width, currentY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        
+        // Price box
+        ctx.fillStyle = '#00d4ff';
+        ctx.fillRect(canvas.width - 68, currentY - 11, 66, 22);
+        ctx.fillStyle = '#0a0e14';
+        ctx.font = 'bold 11px "JetBrains Mono"';
+        ctx.textAlign = 'center';
+        ctx.fillText(`$${this.currentPrice.toFixed(2)}`, canvas.width - 35, currentY + 4);
+      }
+
+      drawCandle(ctx, candle, x, priceToY) {
+        const openY = priceToY(candle.open);
+        const closeY = priceToY(candle.close);
+        const highY = priceToY(candle.high);
+        const lowY = priceToY(candle.low);
+        
+        const color = candle.bullish ? '#00ff88' : '#ff3366';
+        
+        // Wick
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(x + this.candleWidth / 2, highY);
+        ctx.lineTo(x + this.candleWidth / 2, lowY);
+        ctx.stroke();
+        
+        // Body
+        ctx.fillStyle = color;
+        const bodyHeight = Math.abs(closeY - openY);
+        const bodyY = Math.min(openY, closeY);
+        
+        if (bodyHeight < 2) {
+          // Doji - thin line
+          ctx.fillRect(x, bodyY, this.candleWidth, 2);
+        } else {
+          ctx.fillRect(x, bodyY, this.candleWidth, bodyHeight);
+        }
+      }
+
+      animate() {
+        this.update();
+        this.draw();
+        requestAnimationFrame(() => this.animate());
+      }
+    }
+
+    // Initialize
+    const chart = new TradingChart();
+
+    // Wheel control
+    window.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      chart.handleWheel(e.deltaY);
+    }, { passive: false });
+
+    // Touch control
+    let touchStartY = 0;
+    window.addEventListener('touchstart', (e) => {
+      touchStartY = e.touches[0].clientY;
+    });
+
+    window.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      const touchY = e.touches[0].clientY;
+      const deltaY = (touchStartY - touchY) * 1.5;
+      chart.handleWheel(deltaY);
+      touchStartY = touchY;
+    }, { passive: false });
+  </script>
+</body>
+</html>
