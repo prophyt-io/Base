@@ -2,9 +2,27 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self';">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Prophyt - Execution Edge Trading Platform</title>
   <meta name="description" content="The first execution-focused trading platform. AI-powered DCA ladders, Fibonacci precision, zero emotion. Join the waitlist.">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://prophyt.io/">
+  <meta property="og:title" content="Prophyt - Execution Edge Trading Platform">
+  <meta property="og:description" content="The first execution-focused trading platform. AI-powered DCA ladders, Fibonacci precision, zero emotion. Join the waitlist.">
+  <meta property="og:image" content="https://prophyt.io/og-image.png">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://prophyt.io/">
+  <meta name="twitter:title" content="Prophyt - Execution Edge Trading Platform">
+  <meta name="twitter:description" content="The first execution-focused trading platform. AI-powered DCA ladders, Fibonacci precision, zero emotion. Join the waitlist.">
+  <meta name="twitter:image" content="https://prophyt.io/og-image.png">
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://prophyt.io/">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,8 +48,8 @@
             'accent-danger': '#ff3366',
             'accent-warning': '#ffd60a',
             'text-primary': '#e6edf3',
-            'text-secondary': '#8b949e',
-            'text-muted': '#7d8791',
+            'text-secondary': '#959ea5',
+            'text-muted': '#8d979c',
             'border': 'rgba(255, 255, 255, 0.08)',
             'glow': 'rgba(0, 255, 136, 0.15)',
           },
@@ -55,10 +73,23 @@
       --accent-danger: #ff3366;
       --accent-warning: #ffd60a;
       --text-primary: #e6edf3;
-      --text-secondary: #8b949e;
-      --text-muted: #7d8791;
+      --text-secondary: #959ea5;
+      --text-muted: #8d979c;
       --border: rgba(255, 255, 255, 0.08);
       --glow: rgba(0, 255, 136, 0.15);
+    }
+
+    /* Screen Reader Only - Accessibility */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
 
     /* Base Styles */
@@ -83,7 +114,7 @@
         radial-gradient(circle at 20% 30%, rgba(0, 255, 136, 0.05) 0%, transparent 50%),
         radial-gradient(circle at 80% 70%, rgba(0, 212, 255, 0.03) 0%, transparent 50%);
       pointer-events: none;
-      z-index: 0;
+      z-index: -1;
     }
 
     /* Smooth Scrolling */
@@ -98,6 +129,19 @@
       padding: 60px 40px;
       position: relative;
       z-index: 2;
+    }
+
+    /* Fix: Responsive container padding for mobile */
+    @media (max-width: 768px) {
+      .container {
+        padding: 40px 24px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 32px 16px;
+      }
     }
 
     /* Custom Scrollbar */
@@ -162,7 +206,7 @@
       border-radius: 10px;
       color: var(--text-primary);
       font-family: 'JetBrains Mono', monospace;
-      font-size: 1.1rem;
+      font-size: 16px; /* Fix: Minimum 16px to prevent iOS auto-zoom on focus */
       font-weight: 600;
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
@@ -195,6 +239,46 @@
     .btn-primary:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0, 255, 136, 0.2);
+    }
+
+    /* Fix: Add focus-visible state for keyboard navigation */
+    .btn-primary:focus-visible {
+      outline: 3px solid var(--accent-secondary);
+      outline-offset: 2px;
+    }
+
+    /* Fix: Add disabled state */
+    .btn-primary:disabled,
+    .btn-primary[disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Fix: Add loading state for form submission */
+    .btn-primary.loading {
+      position: relative;
+      color: transparent;
+      pointer-events: none;
+    }
+
+    .btn-primary.loading::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 20px;
+      height: 20px;
+      margin: -10px 0 0 -10px;
+      border: 2px solid var(--bg-primary);
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: btn-spin 0.8s linear infinite;
+    }
+
+    @keyframes btn-spin {
+      to { transform: rotate(360deg); }
     }
 
     .btn-primary:active {
@@ -328,6 +412,7 @@
       color: var(--accent-primary);
     }
 
+    /* Slider thumb styling */
     input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
@@ -336,13 +421,13 @@
       background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
       border-radius: 50%;
       cursor: pointer;
-      box-shadow: 0 0 0 4px rgba(0, 255, 136, 0.2);
+      box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.2);
       transition: all 0.2s;
     }
 
     input[type="range"]::-webkit-slider-thumb:hover {
-      transform: scale(1.2);
-      box-shadow: 0 0 0 6px rgba(0, 255, 136, 0.3);
+      transform: scale(1.1);
+      box-shadow: 0 0 0 4px rgba(0, 255, 136, 0.3);
     }
 
     input[type="range"]::-moz-range-thumb {
@@ -352,13 +437,13 @@
       border-radius: 50%;
       cursor: pointer;
       border: none;
-      box-shadow: 0 0 0 4px rgba(0, 255, 136, 0.2);
+      box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.2);
       transition: all 0.2s;
     }
 
     input[type="range"]::-moz-range-thumb:hover {
-      transform: scale(1.2);
-      box-shadow: 0 0 0 6px rgba(0, 255, 136, 0.3);
+      transform: scale(1.1);
+      box-shadow: 0 0 0 4px rgba(0, 255, 136, 0.3);
     }
 
     /* Accent Colors for Different Sliders */
@@ -1902,11 +1987,11 @@
       left: 0 !important;
       width: 100vw !important;
       height: 100vh !important;
-      z-index: 0; /* Same level as content, but DOM order puts it behind */
+      z-index: 0; /* Above body::before, behind main content */
       pointer-events: none;
       overflow: visible;
       opacity: 0.2;
-      filter: brightness(0.6) saturate(0.7);
+      filter: brightness(0.6) saturate(0.7) blur(6px);
       border: none !important;
       border-radius: 0 !important;
     }
@@ -3329,395 +3414,19 @@
       }
     }
 
-    /* ============================================
-       DEMO CALCULATOR STYLES
-       ============================================ */
-
-    /* Demo Main Grid - Two Panel Layout */
-    .demo-main-grid {
       display: grid;
       grid-template-columns: minmax(320px, 400px) 1fr;
       gap: 32px;
     }
 
     @media (max-width: 1024px) {
-      .demo-main-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* Demo Panel */
-    .demo-panel {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 28px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .demo-panel::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, transparent 100%);
-      pointer-events: none;
-    }
-
-    .demo-panel-header {
-      font-family: 'Bricolage Grotesque', sans-serif;
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 24px;
-      padding-bottom: 14px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .demo-panel-header::before {
-      content: '';
-      width: 4px;
-      height: 20px;
-      background: linear-gradient(180deg, var(--accent-primary), var(--accent-secondary));
-      border-radius: 2px;
-    }
-
-    /* Demo Input Group */
-    .demo-input-group {
-      margin-bottom: 24px;
-    }
-
-    .demo-input-group label {
-      display: block;
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-weight: 600;
-    }
-
-    /* Symbol Display (Read-only) */
-    .demo-symbol-display {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 18px;
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-    }
-
-    .demo-symbol-display .symbol-icon {
-      width: 32px;
-      height: 32px;
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      color: var(--bg-primary);
-      font-size: 0.85rem;
-    }
-
-    .demo-symbol-display .symbol-name {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: var(--text-primary);
-    }
-
-    .demo-symbol-display .symbol-label {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-left: auto;
-    }
-
-    /* Demo Slider Container */
-    .demo-slider-container {
-      margin-top: 12px;
-    }
-
-    .demo-slider-track {
-      position: relative;
-      width: 100%;
-      height: 6px;
-      background: var(--bg-tertiary);
-      border-radius: 3px;
-      margin-bottom: 4px;
-    }
-
-    .demo-slider-input-wrapper {
-      position: relative;
-      width: 100%;
-      height: 6px;
-      background: var(--bg-tertiary);
-      border-radius: 3px;
-    }
-
-    .demo-slider-input-wrapper input[type="range"] {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      background: transparent;
-      -webkit-appearance: none;
-      appearance: none;
-      cursor: pointer;
-      z-index: 2;
-    }
-
-    .demo-slider-fill {
-      position: absolute;
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-      border-radius: 3px;
-      transition: left 0.15s ease-out, width 0.15s ease-out;
-      z-index: 1;
-    }
-
-    .demo-slider-labels {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      gap: 8px;
-      margin-top: 8px;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    .demo-slider-labels span:nth-child(2) {
-      text-align: center;
-      color: var(--accent-primary);
-      font-weight: 600;
-    }
-
-    /* Demo Stats Grid */
-    .demo-stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    @media (max-width: 768px) {
-      .demo-stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    .demo-stat-card {
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 14px;
-      text-align: center;
-      transition: all 0.3s;
-    }
-
-    .demo-stat-card:hover {
-      transform: translateY(-2px);
-      border-color: var(--accent-primary);
-    }
-
-    .demo-stat-label {
-      font-size: 0.65rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 6px;
-    }
-
-    .demo-stat-value {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1.3rem;
-      font-weight: 800;
-      color: var(--accent-primary);
-    }
-
-    .demo-stat-value.secondary {
-      color: var(--accent-secondary);
-    }
-
-    .demo-stat-value.warning {
-      color: var(--accent-warning);
-    }
-
-    /* Demo Chart Container */
-    .demo-chart-container {
-      background: var(--bg-tertiary);
-      border-radius: 12px;
-      padding: 24px;
-      height: 400px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .demo-chart-canvas {
-      width: 100%;
-      height: 100%;
-      position: relative;
-    }
-
-    /* Demo Ladder Lines */
-    .demo-ladder-line {
-      position: absolute;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: var(--accent-primary);
-      opacity: 0.6;
-      transition: opacity 0.15s ease, height 0.15s ease;
-    }
-
-    .demo-ladder-line:hover {
-      opacity: 1;
-      height: 3px;
-      z-index: 10;
-    }
-
-    .demo-ladder-label {
-      position: absolute;
-      right: 8px;
-      transform: translateY(-50%);
-      font-size: 0.7rem;
-      color: var(--text-secondary);
-      background: var(--bg-secondary);
-      padding: 4px 8px;
-      border-radius: 4px;
-      white-space: nowrap;
-      pointer-events: none;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    /* Fibonacci Lines */
-    .demo-fib-line {
-      position: absolute;
-      left: 0;
-      right: 0;
-      height: 1px;
-      border-top: 2px dashed;
-    }
-
-    .demo-fib-line.fib-382 {
-      border-color: var(--accent-warning);
-    }
-
-    .demo-fib-line.fib-618 {
-      border-color: var(--accent-danger);
-    }
-
-    /* Average Entry Line */
-    .demo-avg-line {
-      position: absolute;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: var(--accent-secondary);
-      opacity: 0.8;
-    }
-
-    /* Empty State */
-    .demo-empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: var(--text-muted);
-    }
-
-    .demo-empty-state svg {
-      width: 60px;
-      height: 60px;
-      margin-bottom: 16px;
-      opacity: 0.3;
-    }
-
-    /* Optimization Banner */
-    .optimization-banner {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      padding: 16px 20px;
-      background: linear-gradient(135deg, rgba(0, 255, 136, 0.08) 0%, rgba(0, 212, 255, 0.05) 100%);
-      border: 1px solid rgba(0, 255, 136, 0.25);
-      border-radius: 12px;
-      margin-bottom: 24px;
-      opacity: 0;
-      transform: translateY(-10px);
-      transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-
-    .optimization-banner.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .optimization-banner.pulse {
-      animation: bannerPulse 2s ease-in-out infinite;
-    }
-
-    @keyframes bannerPulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.15); }
-      50% { box-shadow: 0 0 20px 5px rgba(0, 255, 136, 0.1); }
-    }
-
-    .optimization-week {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--accent-primary);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-
-    .optimization-harmonic {
-      font-family: 'Bricolage Grotesque', sans-serif;
-      font-size: 0.9375rem;
-      color: var(--text-secondary);
-    }
-
-    .optimization-outcome {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--accent-primary);
-    }
-
-    /* Auto Indicator Badge */
-    .auto-indicator {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      background: rgba(0, 255, 136, 0.1);
-      border: 1px solid rgba(0, 255, 136, 0.3);
-      border-radius: 100px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.6875rem;
-      color: var(--accent-primary);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 16px;
-    }
-
-    .auto-indicator .dot {
-      width: 6px;
-      height: 6px;
-      background: var(--accent-primary);
-      border-radius: 50%;
-      animation: dotPulse 1s ease-in-out infinite;
-    }
-
-    @keyframes dotPulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
-    }
+      
   </style>
 </head>
 <body class="antialiased loading">
+  <!-- Fix: Skip link for accessibility -->
+  <a href="#mainContent" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-accent-primary focus:text-bg-primary focus:rounded-lg focus:font-semibold">Skip to main content</a>
+
   <!-- Page Loader -->
   <div id="pageLoader" class="page-loader" aria-label="Loading Prophyt" role="status">
     <div class="loader-content">
@@ -3734,7 +3443,7 @@
   </div>
 
   <!-- Main Page Content -->
-  <div id="mainContent" class="main-content">
+  <main id="mainContent" class="main-content">
 
   <!-- Navigation with Trust Signals - Enhanced Per Style Guide v4 -->
   <nav class="fixed top-0 w-full z-50 bg-bg-primary/90 backdrop-blur-md border-b border-white/8">
@@ -3813,8 +3522,8 @@
           <span class="text-text-secondary text-sm font-bricolage">of systematic DCA investors<br class="hidden sm:inline">beat emotional traders (historical)</span>
         </div>
         <div class="flex flex-wrap gap-4">
-          <a href="#demo" class="px-8 py-4 bg-accent-primary text-bg-primary rounded-lg font-semibold text-lg hover:glow-primary transition-all duration-300 font-bricolage">
-            Try the Ladder
+          <a href="#signup" class="px-8 py-4 bg-accent-primary text-bg-primary rounded-lg font-semibold text-lg hover:glow-primary transition-all duration-300 font-bricolage">
+            Join Waitlist
           </a>
           <a href="#comparison" class="px-8 py-4 border border-accent-secondary text-accent-secondary rounded-lg font-semibold text-lg hover:bg-accent-secondary/10 transition-all duration-300 font-bricolage">
             See the Difference
@@ -3878,7 +3587,7 @@
       <!-- Right: Grid Trading Visualization -->
       <div>
         <div class="grid-viz-container rounded-xl">
-          <canvas id="gridViz"></canvas>
+          <canvas id="gridViz" aria-label="Animated grid trading visualization showing automated buy and sell levels" role="img"></canvas>
           <div class="particles" id="gridVizParticles"></div>
           <div class="absolute top-4 right-4 text-xs text-accent-primary font-mono font-bold tracking-wider animate-pulse z-10">● AUTO</div>
         </div>
@@ -4249,149 +3958,6 @@
     </div>
   </section>
 
-  <!-- Interactive Demo Section - LadderScale Calculator Demo -->
-  <section id="demo" class="py-24 px-6">
-    <div class="max-w-6xl mx-auto">
-      <h2 class="text-4xl font-bold text-center mb-4 font-bricolage">Experience the Algorithm</h2>
-      <p class="text-text-secondary text-center mb-12 text-lg font-bricolage">Adjust the parameters. Watch the ladder adapt in real-time.</p>
-
-      <!-- Two-Panel Demo Calculator -->
-      <div class="demo-main-grid">
-        <!-- Configuration Panel -->
-        <div class="demo-panel">
-          <div class="demo-panel-header">Configuration</div>
-
-          <!-- Optimization Banner -->
-          <div class="optimization-banner" id="optimizationBanner">
-            <div class="optimization-week">🎯 WEEK <span id="weekNumber">23</span> OPTIMIZED</div>
-            <div class="optimization-harmonic" id="harmonicStatus">Harmonics Shifted -2%</div>
-            <div class="optimization-outcome">Target: <span id="drawdownTarget">-18% Max Drawdown</span></div>
-          </div>
-
-          <!-- Auto Indicator -->
-          <div class="auto-indicator" id="autoIndicator" style="display: none;">
-            <span class="dot"></span>
-            <span>Auto</span>
-          </div>
-
-          <!-- Symbol Display (Read-only) -->
-          <div class="demo-input-group">
-            <label>Symbol</label>
-            <div class="demo-symbol-display">
-              <div class="symbol-icon">S</div>
-              <span class="symbol-name">SPY</span>
-              <span class="symbol-label">S&P 500 ETF</span>
-            </div>
-            <!-- Hidden config values -->
-            <input type="hidden" id="demoStartPrice" value="690">
-            <input type="hidden" id="demoBottomPrice" value="630">
-            <input type="hidden" id="demoCapital" value="65000">
-          </div>
-
-          <!-- Levels Slider -->
-          <div class="demo-input-group">
-            <label for="demoLevels">Levels (<span id="demoLevelsValue">10</span>)</label>
-            <div class="demo-slider-container">
-              <div class="demo-slider-track"></div>
-              <div class="demo-slider-input-wrapper">
-                <div class="demo-slider-fill" id="demoLevelsFill"></div>
-                <input type="range" id="demoLevels" min="5" max="15" value="10" step="1">
-              </div>
-              <div class="demo-slider-labels">
-                <span>5</span>
-                <span id="demoLevelsDisplay">10</span>
-                <span>15</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Alpha Slider -->
-          <div class="demo-input-group">
-            <label for="demoAlpha">Alpha - Aggressiveness (<span id="demoAlphaValue">0.80</span>)</label>
-            <div class="demo-slider-container">
-              <div class="demo-slider-track"></div>
-              <div class="demo-slider-input-wrapper">
-                <div class="demo-slider-fill" id="demoAlphaFill"></div>
-                <input type="range" id="demoAlpha" min="-0.30" max="3.0" value="0.80" step="0.01">
-              </div>
-              <div class="demo-slider-labels">
-                <span>-0.30</span>
-                <span id="demoAlphaDisplay">0.80</span>
-                <span>3.0</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Grid Spacing Factor Slider -->
-          <div class="demo-input-group">
-            <label for="demoSpacing">Grid Spacing Factor (<span id="demoSpacingValue">1.00</span>)</label>
-            <div class="demo-slider-container">
-              <div class="demo-slider-track"></div>
-              <div class="demo-slider-input-wrapper">
-                <div class="demo-slider-fill" id="demoSpacingFill"></div>
-                <input type="range" id="demoSpacing" min="0.5" max="2.0" value="1.0" step="0.01">
-              </div>
-              <div class="demo-slider-labels">
-                <span>0.5 (Tighter)</span>
-                <span id="demoSpacingDisplay">1.0 (Equal)</span>
-                <span>2.0 (Wider)</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Price Range Info -->
-          <div class="mt-6 pt-4 border-t border-white/8">
-            <div class="flex justify-between text-sm mb-2">
-              <span class="text-text-muted font-bricolage">Start Price:</span>
-              <span class="text-text-primary font-jetbrains font-semibold">$690.00</span>
-            </div>
-            <div class="flex justify-between text-sm">
-              <span class="text-text-muted font-bricolage">Bottom Price:</span>
-              <span class="text-text-primary font-jetbrains font-semibold">$630.00</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Visualization Panel -->
-        <div class="demo-panel">
-          <div class="demo-panel-header">Visualization</div>
-
-          <!-- Stats Grid -->
-          <div class="demo-stats-grid">
-            <div class="demo-stat-card">
-              <div class="demo-stat-label">Avg Entry</div>
-              <div class="demo-stat-value" id="demoAvgEntry">--</div>
-            </div>
-            <div class="demo-stat-card">
-              <div class="demo-stat-label">Total Shares</div>
-              <div class="demo-stat-value secondary" id="demoTotalShares">--</div>
-            </div>
-            <div class="demo-stat-card">
-              <div class="demo-stat-label">Fib 38.2%</div>
-              <div class="demo-stat-value warning" id="demoFib382">--</div>
-            </div>
-            <div class="demo-stat-card">
-              <div class="demo-stat-label">Fib 61.8%</div>
-              <div class="demo-stat-value warning" id="demoFib618">--</div>
-            </div>
-          </div>
-
-          <!-- Chart Container -->
-          <div class="demo-chart-container">
-            <div class="demo-chart-canvas" id="demoChartCanvas">
-              <div class="demo-empty-state">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path>
-                </svg>
-                <div>Configure parameters to visualize ladder</div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- Comparison Section -->
   <section id="comparison" class="py-24 px-6 bg-bg-secondary">
@@ -4898,13 +4464,13 @@
       <div class="faq-list">
         <!-- FAQ 1: Security -->
         <div class="faq-item">
-          <button class="faq-question" onclick="toggleFaq(this)">
+          <button class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-answer-1">
             <span>Is my money safe?</span>
-            <svg class="faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <svg class="faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
-          <div class="faq-answer">
+          <div class="faq-answer" id="faq-answer-1" aria-hidden="true">
             <div class="faq-answer-content">
               Yes. Prophyt uses <strong>read-only API access</strong> to analyze markets and generate signals—your funds never leave your brokerage account. We can't withdraw, transfer, or touch your money. We only read market data and send you execution recommendations. You always maintain full control.
             </div>
@@ -4913,13 +4479,13 @@
 
         <!-- FAQ 2: Difference from recurring buy -->
         <div class="faq-item">
-          <button class="faq-question" onclick="toggleFaq(this)">
+          <button class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-answer-2">
             <span>How is this different from my brokerage's recurring buy?</span>
-            <svg class="faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <svg class="faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
-          <div class="faq-answer">
+          <div class="faq-answer" id="faq-answer-2" aria-hidden="true">
             <div class="faq-answer-content">
               Recurring buys execute at fixed intervals regardless of market conditions. <strong>LadderScale</strong> uses Fibonacci-based price levels to buy more when prices drop and less when prices rise—automatically. It's systematic DCA with mathematical precision, not calendar-based guessing.
             </div>
@@ -4928,13 +4494,13 @@
 
         <!-- FAQ 3: Project stage -->
         <div class="faq-item">
-          <button class="faq-question" onclick="toggleFaq(this)">
+          <button class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-answer-3">
             <span>What stage is Prophyt in?</span>
-            <svg class="faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <svg class="faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
-          <div class="faq-answer">
+          <div class="faq-answer" id="faq-answer-3" aria-hidden="true">
             <div class="faq-answer-content">
               We're an <strong>early-stage indie project</strong>—not a venture-backed startup. Prophyt is currently in MVP development with core features like LadderScale DCA and signal processing being built. We're transparent about this because we believe honest positioning beats fake enterprise credibility. Join the waitlist to follow our progress.
             </div>
@@ -4943,13 +4509,13 @@
 
         <!-- FAQ 4: Supported brokers -->
         <div class="faq-item">
-          <button class="faq-question" onclick="toggleFaq(this)">
+          <button class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-answer-4">
             <span>What brokers and exchanges do you support?</span>
-            <svg class="faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <svg class="faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
-          <div class="faq-answer">
+          <div class="faq-answer" id="faq-answer-4" aria-hidden="true">
             <div class="faq-answer-content">
               We're building API integrations for <strong>Alpaca, Interactive Brokers, Coinbase, and Kraken</strong>. Our architecture is broker-agnostic—if your broker offers a read-only API, we can likely integrate it. Let us know what you use when you join the waitlist.
             </div>
@@ -4958,13 +4524,13 @@
 
         <!-- FAQ 5: Pricing -->
         <div class="faq-item">
-          <button class="faq-question" onclick="toggleFaq(this)">
+          <button class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-answer-5">
             <span>Is it really free?</span>
-            <svg class="faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <svg class="faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
-          <div class="faq-answer">
+          <div class="faq-answer" id="faq-answer-5" aria-hidden="true">
             <div class="faq-answer-content">
               Yes, there's a <strong>free forever tier</strong> for individual traders. No credit card required to start. We may introduce premium features for power users or institutional clients later, but core execution tools will always have a free option. We're indie-built—no VC pressure to monetize users.
             </div>
@@ -5094,21 +4660,27 @@
       <div class="p-8 bg-bg-tertiary/80 border-2 border-accent-primary/30 rounded-2xl shadow-xl shadow-accent-primary/5 max-w-xl mx-auto backdrop-blur-sm">
         <form id="waitlistForm" class="space-y-6">
           <div class="flex flex-col sm:flex-row gap-4">
+            <label for="emailInput" class="sr-only">Email address for waitlist</label>
             <input
               type="email"
               id="emailInput"
               placeholder="your@email.com"
               required
+              aria-label="Email address for waitlist"
+              autocomplete="email"
+              inputmode="email"
+              enterkeyhint="go"
               class="flex-1 px-6 py-4 bg-bg-primary border-2 border-white/20 rounded-lg text-text-primary placeholder-text-muted focus:outline-none focus:border-accent-primary transition-all font-bricolage text-lg"
             >
             <button
               type="submit"
+              id="submitBtn"
               class="btn-primary px-8 py-4 font-bold text-lg whitespace-nowrap font-bricolage shadow-lg shadow-accent-primary/20"
             >
-              Join Waitlist
+              <span class="btn-text">Join Waitlist</span>
             </button>
           </div>
-          <p id="formStatus" class="text-sm text-text-muted font-jetbrains"></p>
+          <p id="formStatus" aria-live="polite" aria-atomic="true" class="text-sm text-text-muted font-jetbrains"></p>
         </form>
       </div>
 
@@ -5221,7 +4793,7 @@
     </div>
   </footer>
 
-  </div><!-- End main-content -->
+  </main><!-- End main-content -->
 
   <!-- JavaScript -->
   <script>
@@ -5230,245 +4802,24 @@
     // ============================================
     function toggleFaq(button) {
       const faqItem = button.parentElement;
+      const answer = faqItem.querySelector('.faq-answer');
       const isActive = faqItem.classList.contains('active');
 
-      // Close all other FAQ items
+      // Close all other FAQ items and update their ARIA states
       document.querySelectorAll('.faq-item').forEach(item => {
         item.classList.remove('active');
+        const btn = item.querySelector('.faq-question');
+        const ans = item.querySelector('.faq-answer');
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+        if (ans) ans.setAttribute('aria-hidden', 'true');
       });
 
       // Toggle current item
       if (!isActive) {
         faqItem.classList.add('active');
+        button.setAttribute('aria-expanded', 'true');
+        if (answer) answer.setAttribute('aria-hidden', 'false');
       }
-    }
-
-    // ============================================
-    // DEMO CALCULATOR CONFIGURATION
-    // ============================================
-    const DEMO_CONFIG = {
-      symbol: 'SPY',
-      startPrice: 690,
-      bottomPrice: 630,
-      capital: 65000,
-      epsilon: 0.1
-    };
-
-    // ============================================
-    // DEMO AUTO-PLAYER - Animated Optimization Cycle
-    // ============================================
-
-    class DemoAutoPlayer {
-      constructor() {
-        this.isRunning = false;
-        this.currentIndex = 0;
-        this.cycleTimeout = null;
-        this.animationFrame = null;
-
-        // 3 weekly configurations
-        this.configs = [
-          {
-            week: 23,
-            harmonic: "Harmonics Shifted -2%",
-            outcome: "-18% Max Drawdown",
-            levels: 8,
-            alpha: 0.65,
-            spacing: 1.2
-          },
-          {
-            week: 24,
-            harmonic: "Harmonic Grid Widened",
-            outcome: "-12% Max Drawdown",
-            levels: 12,
-            alpha: 1.20,
-            spacing: 0.85
-          },
-          {
-            week: 25,
-            harmonic: "Harmonic Grid Tightened",
-            outcome: "-12% Max Drawdown",
-            levels: 12,
-            alpha: 1.20,
-            spacing: 1.4
-          }
-        ];
-
-        // DOM references
-        this.banner = document.getElementById('optimizationBanner');
-        this.weekNumber = document.getElementById('weekNumber');
-        this.harmonicStatus = document.getElementById('harmonicStatus');
-        this.drawdownTarget = document.getElementById('drawdownTarget');
-        this.autoIndicator = document.getElementById('autoIndicator');
-
-        // Slider references
-        this.levelsSlider = document.getElementById('demoLevels');
-        this.alphaSlider = document.getElementById('demoAlpha');
-        this.spacingSlider = document.getElementById('demoSpacing');
-
-        // Reference to updateDemo function (will be set by initDemoCalculator)
-        this.updateDemoFn = null;
-        this.updateSliderFillFn = null;
-      }
-
-      start() {
-        this.isRunning = true;
-        this.showBanner();
-        this.cycleToNext();
-      }
-
-      stop() {
-        this.isRunning = false;
-        this.hideAutoIndicator();
-
-        // Show manual mode message briefly
-        this.harmonicStatus.textContent = "Manual Mode";
-        this.drawdownTarget.textContent = "Explore Freely";
-
-        setTimeout(() => {
-          this.hideBanner();
-        }, 2000);
-
-        // Clear any pending animation
-        if (this.cycleTimeout) {
-          clearTimeout(this.cycleTimeout);
-          this.cycleTimeout = null;
-        }
-        if (this.animationFrame) {
-          cancelAnimationFrame(this.animationFrame);
-          this.animationFrame = null;
-        }
-      }
-
-      cycleToNext() {
-        if (!this.isRunning) return;
-
-        const config = this.configs[this.currentIndex];
-
-        // Update banner content
-        this.weekNumber.textContent = config.week;
-        this.harmonicStatus.textContent = config.harmonic;
-        this.drawdownTarget.textContent = config.outcome;
-
-        // Animate sliders to new values
-        this.animateSlidersTo(config);
-
-        // Schedule next cycle (4 seconds)
-        this.cycleTimeout = setTimeout(() => {
-          this.currentIndex = (this.currentIndex + 1) % this.configs.length;
-          this.cycleToNext();
-        }, 4000);
-      }
-
-      animateSlidersTo(config) {
-        const duration = 800; // 800ms animation
-        const startTime = performance.now();
-
-        const startValues = {
-          levels: parseFloat(this.levelsSlider.value),
-          alpha: parseFloat(this.alphaSlider.value),
-          spacing: parseFloat(this.spacingSlider.value)
-        };
-
-        const targetValues = {
-          levels: config.levels,
-          alpha: config.alpha,
-          spacing: config.spacing
-        };
-
-        const animate = (currentTime) => {
-          if (!this.isRunning) return;
-
-          const elapsed = currentTime - startTime;
-          const progress = Math.min(elapsed / duration, 1);
-
-          // Easing: cubic-bezier(0.16, 1, 0.3, 1) approximation
-          const eased = 1 - Math.pow(1 - progress, 3);
-
-          // Interpolate values
-          const currentLevels = startValues.levels + (targetValues.levels - startValues.levels) * eased;
-          const currentAlpha = startValues.alpha + (targetValues.alpha - startValues.alpha) * eased;
-          const currentSpacing = startValues.spacing + (targetValues.spacing - startValues.spacing) * eased;
-
-          // Update sliders
-          this.levelsSlider.value = currentLevels;
-          this.alphaSlider.value = currentAlpha;
-          this.spacingSlider.value = currentSpacing;
-
-          // Update display values
-          document.getElementById('demoLevelsValue').textContent = Math.round(currentLevels);
-          document.getElementById('demoAlphaValue').textContent = currentAlpha.toFixed(2);
-          document.getElementById('demoSpacingValue').textContent = currentSpacing.toFixed(2);
-
-          // Update display labels
-          document.getElementById('demoLevelsDisplay').textContent = Math.round(currentLevels);
-          document.getElementById('demoAlphaDisplay').textContent = currentAlpha.toFixed(2);
-          const spacingVal = currentSpacing.toFixed(2);
-          document.getElementById('demoSpacingDisplay').textContent = spacingVal + (spacingVal === '1.00' ? ' (Equal)' : spacingVal < '1.00' ? ' (Tighter)' : ' (Wider)');
-
-          // Update slider backgrounds
-          if (this.updateSliderFillFn) {
-            this.updateSliderFillFn(this.levelsSlider, 'demoLevelsFill');
-            this.updateSliderFillFn(this.alphaSlider, 'demoAlphaFill');
-            this.updateSliderFillFn(this.spacingSlider, 'demoSpacingFill');
-          }
-
-          // Trigger chart update
-          if (this.updateDemoFn) {
-            this.updateDemoFn();
-          }
-
-          if (progress < 1) {
-            this.animationFrame = requestAnimationFrame(animate);
-          }
-        };
-
-        this.animationFrame = requestAnimationFrame(animate);
-      }
-
-      showBanner() {
-        if (this.banner) {
-          this.banner.classList.add('visible', 'pulse');
-        }
-        if (this.autoIndicator) {
-          this.autoIndicator.style.display = 'inline-flex';
-        }
-      }
-
-      hideBanner() {
-        if (this.banner) {
-          this.banner.classList.remove('visible', 'pulse');
-        }
-      }
-
-      hideAutoIndicator() {
-        if (this.autoIndicator) {
-          this.autoIndicator.style.display = 'none';
-        }
-      }
-    }
-
-    // Initialize auto-player
-    let demoAutoPlayer = null;
-
-    function initDemoAutoPlayer(updateDemoFn, updateSliderFillFn) {
-      demoAutoPlayer = new DemoAutoPlayer();
-      demoAutoPlayer.updateDemoFn = updateDemoFn;
-      demoAutoPlayer.updateSliderFillFn = updateSliderFillFn;
-
-      // Stop on any user interaction with sliders
-      const sliders = [demoAutoPlayer.levelsSlider, demoAutoPlayer.alphaSlider, demoAutoPlayer.spacingSlider];
-      sliders.forEach(slider => {
-        if (slider) {
-          slider.addEventListener('mousedown', () => demoAutoPlayer.stop());
-          slider.addEventListener('touchstart', () => demoAutoPlayer.stop());
-          slider.addEventListener('focus', () => demoAutoPlayer.stop());
-        }
-      });
-
-      // Start auto-play after a brief delay
-      setTimeout(() => {
-        demoAutoPlayer.start();
-      }, 1500);
     }
 
     // ============================================
@@ -5500,540 +4851,43 @@
       };
     }
 
-    // ============================================
-    // DEMO LADDERSCALE ALGORITHM
-    // ============================================
 
-    // Generate ladder with progressive spacing
-    function generateProgressiveLadder(startPrice, bottom, levels, spacingFactor) {
-      if (levels < 2) {
-        console.warn('generateProgressiveLadder: levels must be >= 2, got', levels);
-        levels = 2;
-      }
-
-      const priceLevels = [];
-      const totalRange = startPrice - bottom;
-
-      if (spacingFactor === 1.0) {
-        // Equal spacing (linear)
-        const step = totalRange / (levels - 1);
-        for (let i = 0; i < levels; i++) {
-          priceLevels.push(roundFinancial(startPrice - (step * i)));
-        }
-      } else {
-        // Progressive spacing (exponential or logarithmic)
-        let cumulativeDistance = 0;
-        let totalWeight = 0;
-
-        // Calculate total weight for normalization
-        for (let i = 0; i < levels; i++) {
-          totalWeight += Math.pow(i + 1, spacingFactor);
-        }
-
-        priceLevels.push(startPrice);
-
-        for (let i = 1; i < levels; i++) {
-          const weight = Math.pow(i, spacingFactor);
-          cumulativeDistance += weight;
-          const normalizedDistance = (cumulativeDistance / totalWeight) * totalRange;
-          priceLevels.push(roundFinancial(startPrice - normalizedDistance));
-        }
-      }
-
-      return priceLevels;
-    }
-
-    // Calculate inverse-weighted DCA ladder
-    function calculateDemoLadder() {
-      const levels = parseInt(document.getElementById('demoLevels').value);
-      const alpha = parseFloat(document.getElementById('demoAlpha').value);
-      const spacing = parseFloat(document.getElementById('demoSpacing').value);
-      const startPrice = DEMO_CONFIG.startPrice;
-      const bottom = DEMO_CONFIG.bottomPrice;
-      const capital = DEMO_CONFIG.capital;
-      const epsilon = DEMO_CONFIG.epsilon;
-
-      // Generate price levels
-      const priceLevels = generateProgressiveLadder(startPrice, bottom, levels, spacing);
-
-      // Calculate inverse weights
-      const weights = priceLevels.map(p => 1 / Math.pow((p - bottom + epsilon), alpha));
-      const sumWeights = weights.reduce((a, b) => a + b, 0);
-
-      // Handle numerical overflow
-      let normWeights;
-      if (!isFinite(sumWeights) || sumWeights === 0) {
-        console.error('Invalid weight calculation - numerical overflow detected, using equal weights');
-        const equalWeight = 1 / priceLevels.length;
-        normWeights = priceLevels.map(() => equalWeight);
-      } else {
-        normWeights = weights.map(w => w / sumWeights);
-      }
-
-      // Allocate capital
-      const allocations = normWeights.map(w => roundFinancial(w * capital));
-      const shares = allocations.map((a, i) => Math.floor(a / priceLevels[i]));
-
-      // Calculate metrics
-      const totalShares = shares.reduce((a, b) => a + b, 0);
-      const totalAllocated = shares.reduce((sum, s, i) => sum + roundFinancial(s * priceLevels[i]), 0);
-      const avgEntry = totalShares > 0 ? roundFinancial(totalAllocated / totalShares) : 0;
-
-      const fib382 = roundFinancial(bottom + 0.382 * (startPrice - bottom));
-      const fib618 = roundFinancial(bottom + 0.618 * (startPrice - bottom));
-
-      return {
-        priceLevels,
-        shares,
-        allocations,
-        normWeights,
-        totalShares,
-        totalAllocated,
-        avgEntry,
-        fib382,
-        fib618,
-        capital
-      };
-    }
-
-    // Update slider fill (left-to-right fill)
-    function updateDemoSliderFill(slider, fillId) {
-      const value = parseFloat(slider.value);
-      const min = parseFloat(slider.min);
-      const max = parseFloat(slider.max);
-      const percent = ((value - min) / (max - min)) * 100;
-
-      const fillEl = document.getElementById(fillId);
-      if (fillEl) {
-        fillEl.style.left = '0%';
-        fillEl.style.width = percent + '%';
-      }
-    }
-
-    // Render demo chart (DOM-based)
-    function renderDemoChart(priceLevels, shares, avgEntry, fib382, fib618) {
-      const canvas = document.getElementById('demoChartCanvas');
-      canvas.innerHTML = '';
-
-      const startPrice = DEMO_CONFIG.startPrice;
-      const bottom = DEMO_CONFIG.bottomPrice;
-      const priceRange = startPrice - bottom;
-      const chartHeight = canvas.offsetHeight;
-
-      if (priceRange <= 0 || chartHeight <= 0) return;
-
-      const priceToY = (price) => {
-        const ratio = (startPrice - price) / priceRange;
-        return Math.max(0, Math.min(chartHeight, ratio * chartHeight));
-      };
-
-      const maxShares = Math.max(...shares);
-
-      // Add ladder lines
-      priceLevels.forEach((price, i) => {
-        const y = priceToY(price);
-        const shareCount = shares[i];
-
-        const line = document.createElement('div');
-        line.className = 'demo-ladder-line';
-        line.style.top = `${y}px`;
-        line.style.opacity = shareCount > 0 ? 0.6 + (shareCount / maxShares) * 0.4 : 0.2;
-        line.style.zIndex = '3';
-
-        const label = document.createElement('div');
-        label.className = 'demo-ladder-label';
-        label.textContent = `L${i + 1}: ${formatCurrency(price)} • ${shareCount} sh`;
-        label.style.top = `${y}px`;
-        label.style.zIndex = '4';
-
-        canvas.appendChild(line);
-        canvas.appendChild(label);
-      });
-
-      // Add average entry line
-      if (avgEntry > 0) {
-        const avgLine = document.createElement('div');
-        avgLine.className = 'demo-avg-line';
-        avgLine.style.top = `${priceToY(avgEntry)}px`;
-        avgLine.style.zIndex = '5';
-
-        const avgLabel = document.createElement('div');
-        avgLabel.className = 'demo-ladder-label';
-        avgLabel.style.backgroundColor = 'var(--accent-secondary)';
-        avgLabel.style.color = 'var(--bg-primary)';
-        avgLabel.style.fontWeight = '600';
-        avgLabel.textContent = `AVG: ${formatCurrency(avgEntry)}`;
-        avgLabel.style.top = `${priceToY(avgEntry)}px`;
-        avgLabel.style.zIndex = '6';
-
-        canvas.appendChild(avgLine);
-        canvas.appendChild(avgLabel);
-      }
-
-      // Add Fibonacci lines
-      const fib382Line = document.createElement('div');
-      fib382Line.className = 'demo-fib-line fib-382';
-      fib382Line.style.top = `${priceToY(fib382)}px`;
-      fib382Line.style.zIndex = '7';
-
-      const fib382Label = document.createElement('div');
-      fib382Label.className = 'demo-ladder-label';
-      fib382Label.textContent = `Fib 38.2%: ${formatCurrency(fib382)}`;
-      fib382Label.style.top = `${priceToY(fib382)}px`;
-      fib382Label.style.left = '8px';
-      fib382Label.style.right = 'auto';
-      fib382Label.style.zIndex = '8';
-
-      const fib618Line = document.createElement('div');
-      fib618Line.className = 'demo-fib-line fib-618';
-      fib618Line.style.top = `${priceToY(fib618)}px`;
-      fib618Line.style.zIndex = '7';
-
-      const fib618Label = document.createElement('div');
-      fib618Label.className = 'demo-ladder-label';
-      fib618Label.textContent = `Fib 61.8%: ${formatCurrency(fib618)}`;
-      fib618Label.style.top = `${priceToY(fib618)}px`;
-      fib618Label.style.left = '8px';
-      fib618Label.style.right = 'auto';
-      fib618Label.style.zIndex = '8';
-
-      canvas.appendChild(fib382Line);
-      canvas.appendChild(fib382Label);
-      canvas.appendChild(fib618Line);
-      canvas.appendChild(fib618Label);
-    }
-
-    // Initialize demo calculator
-    function initDemoCalculator() {
-      const levelsSlider = document.getElementById('demoLevels');
-      const alphaSlider = document.getElementById('demoAlpha');
-      const spacingSlider = document.getElementById('demoSpacing');
-
-      // Update function
-      const updateDemo = () => {
-        const data = calculateDemoLadder();
-
-        // Update stats
-        document.getElementById('demoAvgEntry').textContent = data.totalShares > 0 ? formatCurrency(data.avgEntry) : '--';
-        document.getElementById('demoTotalShares').textContent = data.totalShares.toLocaleString();
-        document.getElementById('demoFib382').textContent = formatCurrency(data.fib382);
-        document.getElementById('demoFib618').textContent = formatCurrency(data.fib618);
-
-        // Render chart
-        renderDemoChart(data.priceLevels, data.shares, data.avgEntry, data.fib382, data.fib618);
-      };
-
-      // Slider event handlers
-      levelsSlider.addEventListener('input', (e) => {
-        document.getElementById('demoLevelsValue').textContent = e.target.value;
-        document.getElementById('demoLevelsDisplay').textContent = e.target.value;
-        updateDemoSliderFill(e.target, 'demoLevelsFill');
-        updateDemo();
-      });
-
-      alphaSlider.addEventListener('input', (e) => {
-        const val = parseFloat(e.target.value).toFixed(2);
-        document.getElementById('demoAlphaValue').textContent = val;
-        document.getElementById('demoAlphaDisplay').textContent = val;
-        updateDemoSliderFill(e.target, 'demoAlphaFill');
-        updateDemo();
-      });
-
-      spacingSlider.addEventListener('input', (e) => {
-        const val = parseFloat(e.target.value).toFixed(2);
-        document.getElementById('demoSpacingValue').textContent = val;
-        document.getElementById('demoSpacingDisplay').textContent = val + (val === '1.00' ? ' (Equal)' : val < '1.00' ? ' (Tighter)' : ' (Wider)');
-        updateDemoSliderFill(e.target, 'demoSpacingFill');
-        updateDemo();
-      });
-
-      // Initialize slider fills
-      updateDemoSliderFill(levelsSlider, 'demoLevelsFill');
-      updateDemoSliderFill(alphaSlider, 'demoAlphaFill');
-      updateDemoSliderFill(spacingSlider, 'demoSpacingFill');
-
-      // Initial calculation
-      updateDemo();
-
-      // Start auto-player
-      initDemoAutoPlayer(updateDemo, updateDemoSliderFill);
-    }
 
     // ============================================
-    // HERO CHART ANIMATION
+    // (HeroChart class removed - dead code: never instantiated, references undefined CONFIG/calculateLadder)
     // ============================================
-    class HeroChart {
-      constructor(canvasId) {
-        this.canvas = document.getElementById(canvasId);
-        if (!this.canvas) {
-          console.error('HeroChart: Canvas not found:', canvasId);
-          return;
-        }
-        this.ctx = this.canvas.getContext('2d');
-        this.ladderRungs = [];
-        this.animationFrame = null;
-        this.lastTime = 0;
-
-        // Bind resize method for proper cleanup
-        this.boundResize = () => this.resize();
-
-        this.candles = this.generateCandles();
-        window.addEventListener('resize', this.boundResize);
-        this.resize();
-        this.animate();
-      }
-
-      resize() {
-        if (!this.canvas || !this.ctx) return;
-        try {
-          const rect = this.canvas.parentElement.getBoundingClientRect();
-          const dpr = window.devicePixelRatio || 1;
-
-          // Ensure we have valid dimensions
-          const newWidth = Math.max(rect.width, 300);
-          const newHeight = 384;
-
-          this.canvas.width = newWidth * dpr;
-          this.canvas.height = newHeight * dpr;
-          // Use setTransform instead of scale to prevent accumulation
-          this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-          this.width = newWidth;
-          this.height = newHeight;
-
-          // Redraw after resize if not animating
-          if (!CONFIG.animations.enabled) {
-            this.ctx.clearRect(0, 0, this.width, this.height);
-            this.ctx.fillStyle = CONFIG.colors.bgSecondary;
-            this.ctx.fillRect(0, 0, this.width, this.height);
-            this.drawGrid();
-            this.drawCandles();
-            this.drawLadder();
-          }
-        } catch (error) {
-          // Fallback to default dimensions
-          this.canvas.width = 600 * window.devicePixelRatio;
-          this.canvas.height = 384 * window.devicePixelRatio;
-          this.ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
-          this.width = 600;
-          this.height = 384;
-        }
-      }
-
-      destroy() {
-        if (this.animationFrame) {
-          cancelAnimationFrame(this.animationFrame);
-        }
-        window.removeEventListener('resize', this.boundResize);
-      }
-
-      generateCandles() {
-        const candles = [];
-        const numCandles = 40;
-        let price = CONFIG.basePrice;
-
-        for (let i = 0; i < numCandles; i++) {
-          const change = (Math.random() - 0.48) * 8;
-          const open = price;
-          const close = price + change;
-          const high = Math.max(open, close) + Math.random() * 3;
-          const low = Math.min(open, close) - Math.random() * 3;
-
-          candles.push({ open, close, high, low });
-          price = close;
-        }
-
-        return candles;
-      }
-
-      drawCandles(offsetX = 0) {
-        const candleWidth = this.width / this.candles.length / 1.5;
-        const maxPrice = Math.max(...this.candles.map(c => c.high));
-        const minPrice = Math.min(...this.candles.map(c => c.low));
-        const priceRange = maxPrice - minPrice;
-
-        this.candles.forEach((candle, i) => {
-          const x = i * candleWidth * 1.5 + offsetX;
-          const isGreen = candle.close >= candle.open;
-
-          // Price to Y coordinate
-          const priceToY = (price) =>
-            this.height - ((price - minPrice) / priceRange) * (this.height - 40) - 20;
-
-          // Draw wick
-          this.ctx.strokeStyle = isGreen ? CONFIG.colors.accentPrimary : CONFIG.colors.accentDanger;
-          this.ctx.lineWidth = 1;
-          this.ctx.beginPath();
-          this.ctx.moveTo(x + candleWidth / 2, priceToY(candle.high));
-          this.ctx.lineTo(x + candleWidth / 2, priceToY(candle.low));
-          this.ctx.stroke();
-
-          // Draw body
-          const bodyColor = isGreen ? CONFIG.colors.accentPrimary : CONFIG.colors.accentDanger;
-          this.ctx.fillStyle = bodyColor;
-          this.ctx.globalAlpha = 0.8;
-          this.ctx.fillRect(
-            x,
-            priceToY(Math.max(candle.open, candle.close)),
-            candleWidth,
-            Math.abs(candle.close - candle.open) / priceRange * (this.height - 40)
-          );
-          this.ctx.globalAlpha = 1;
-        });
-      }
-
-      drawLadder() {
-        const basePrice = this.candles[this.candles.length - 1].close;
-        const { rungs } = calculateLadder(basePrice, 0.5, 0.8, 10000);
-        const maxPrice = Math.max(...this.candles.map(c => c.high));
-        const minPrice = Math.min(...this.candles.map(c => c.low));
-        const priceRange = maxPrice - minPrice;
-
-        const priceToY = (price) =>
-          this.height - ((price - minPrice) / priceRange) * (this.height - 40) - 20;
-
-        rungs.forEach((rung, i) => {
-          const y = priceToY(rung.entryPrice);
-
-          // Draw horizontal line
-          this.ctx.strokeStyle = CONFIG.colors.accentSecondary;
-          this.ctx.lineWidth = 2;
-          this.ctx.globalAlpha = 0.6;
-          this.ctx.setLineDash([5, 5]);
-          this.ctx.beginPath();
-          this.ctx.moveTo(0, y);
-          this.ctx.lineTo(this.width, y);
-          this.ctx.stroke();
-          this.ctx.setLineDash([]);
-          this.ctx.globalAlpha = 1;
-
-          // Draw buy indicator
-          this.ctx.fillStyle = CONFIG.colors.accentPrimary;
-          this.ctx.globalAlpha = 0.9;
-          this.ctx.beginPath();
-          this.ctx.arc(this.width - 40, y, 8, 0, Math.PI * 2);
-          this.ctx.fill();
-          this.ctx.globalAlpha = 1;
-
-          // Draw price label
-          this.ctx.fillStyle = CONFIG.colors.textSecondary;
-          this.ctx.font = '12px "Bricolage Grotesque"';
-          this.ctx.textAlign = 'right';
-          this.ctx.fillText(
-            formatCurrency(rung.entryPrice),
-            this.width - 55,
-            y + 4
-          );
-        });
-      }
-
-      drawGrid() {
-        this.ctx.strokeStyle = CONFIG.colors.border;
-        this.ctx.lineWidth = 1;
-
-        // Horizontal grid lines
-        for (let i = 0; i < 5; i++) {
-          const y = (this.height / 5) * i + 20;
-          this.ctx.beginPath();
-          this.ctx.moveTo(0, y);
-          this.ctx.lineTo(this.width, y);
-          this.ctx.stroke();
-        }
-      }
-
-      animate(timestamp = 0) {
-        if (!this.canvas || !this.ctx || !this.width || !this.height) return;
-
-        if (!CONFIG.animations.enabled) {
-          // Clear and draw background for static mode
-          this.ctx.clearRect(0, 0, this.width, this.height);
-          this.ctx.fillStyle = CONFIG.colors.bgSecondary;
-          this.ctx.fillRect(0, 0, this.width, this.height);
-          this.drawGrid();
-          this.drawCandles();
-          this.drawLadder();
-          return;
-        }
-
-        const deltaTime = timestamp - this.lastTime;
-        this.lastTime = timestamp;
-
-        // Clear canvas
-        this.ctx.clearRect(0, 0, this.width, this.height);
-
-        // Draw background
-        this.ctx.fillStyle = CONFIG.colors.bgSecondary;
-        this.ctx.fillRect(0, 0, this.width, this.height);
-
-        this.drawGrid();
-
-        // Animate candles scrolling with proper wrapping
-        const scrollSpeed = 0.02;
-        const candleSpacing = (this.width / this.candles.length) * 1.5;
-        const totalWidth = candleSpacing * this.candles.length;
-        const scrollOffset = (timestamp * scrollSpeed) % totalWidth;
-
-        this.drawCandlesAnimated(scrollOffset, candleSpacing);
-        this.drawLadder();
-
-        this.animationFrame = requestAnimationFrame((t) => this.animate(t));
-      }
-
-      drawCandlesAnimated(scrollOffset, candleSpacing) {
-        const candleWidth = this.width / this.candles.length / 1.5;
-        const maxPrice = Math.max(...this.candles.map(c => c.high));
-        const minPrice = Math.min(...this.candles.map(c => c.low));
-        const priceRange = maxPrice - minPrice;
-
-        const priceToY = (price) =>
-          this.height - ((price - minPrice) / priceRange) * (this.height - 40) - 20;
-
-        // Draw candles twice to create seamless loop
-        const drawSet = (offsetMultiplier) => {
-          this.candles.forEach((candle, i) => {
-            const x = (i * candleSpacing - scrollOffset * offsetMultiplier + this.width) % (this.width + candleWidth) - candleWidth;
-            const isGreen = candle.close >= candle.open;
-
-            // Draw wick
-            this.ctx.strokeStyle = isGreen ? CONFIG.colors.accentPrimary : CONFIG.colors.accentDanger;
-            this.ctx.lineWidth = 1;
-            this.ctx.beginPath();
-            this.ctx.moveTo(x + candleWidth / 2, priceToY(candle.high));
-            this.ctx.lineTo(x + candleWidth / 2, priceToY(candle.low));
-            this.ctx.stroke();
-
-            // Draw body
-            const bodyColor = isGreen ? CONFIG.colors.accentPrimary : CONFIG.colors.accentDanger;
-            this.ctx.fillStyle = bodyColor;
-            this.ctx.globalAlpha = 0.8;
-            const bodyHeight = Math.max(Math.abs(candle.close - candle.open) / priceRange * (this.height - 40), 1);
-            this.ctx.fillRect(
-              x,
-              priceToY(Math.max(candle.open, candle.close)),
-              candleWidth,
-              bodyHeight
-            );
-            this.ctx.globalAlpha = 1;
-          });
-        };
-
-        drawSet(1);
-        drawSet(0);
-      }
-    }
 
     // ============================================
     // WAITLIST FORM
     // ============================================
+
+    // localStorage feature detection
+    function isLocalStorageAvailable() {
+      try {
+        const test = '__storage_test__';
+        localStorage.setItem(test, test);
+        localStorage.removeItem(test);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
     class WaitlistForm {
       constructor() {
         this.form = document.getElementById('waitlistForm');
         this.emailInput = document.getElementById('emailInput');
+        this.submitBtn = document.getElementById('submitBtn');
         this.formStatus = document.getElementById('formStatus');
         this.queuePosition = document.getElementById('queuePosition');
         this.positionNumber = document.getElementById('positionNumber');
         this.shareTwitter = document.getElementById('shareTwitter');
         this.copyLink = document.getElementById('copyLink');
         this.waitlistCount = document.getElementById('waitlistCount');
+        this.isLoading = false;
+
+        // Create debounced validation handler
+        this.debouncedValidate = debounce((email) => this.validateInline(email), 300);
 
         this.attachListeners();
         this.updateWaitlistCount();
@@ -6043,58 +4897,167 @@
         this.form.addEventListener('submit', (e) => this.handleSubmit(e));
         this.shareTwitter.addEventListener('click', () => this.shareOnTwitter());
         this.copyLink.addEventListener('click', () => this.copyReferralLink());
+
+        // Fix: Add inline validation with debounce
+        this.emailInput.addEventListener('input', (e) => {
+          const email = e.target.value.trim();
+          if (email.length > 3) {
+            this.debouncedValidate(email);
+          } else {
+            this.clearValidation();
+          }
+        });
+
+        // Clear validation on blur if empty
+        this.emailInput.addEventListener('blur', () => {
+          if (!this.emailInput.value.trim()) {
+            this.clearValidation();
+          }
+        });
+      }
+
+      validateInline(email) {
+        const normalizedEmail = email.toLowerCase().trim();
+        if (this.validateEmail(normalizedEmail)) {
+          this.emailInput.style.borderColor = 'var(--accent-primary)';
+          this.emailInput.style.boxShadow = '0 0 0 3px var(--glow)';
+        } else if (email.length > 0) {
+          this.emailInput.style.borderColor = 'var(--accent-danger)';
+          this.emailInput.style.boxShadow = '0 0 0 3px rgba(255, 51, 102, 0.15)';
+        }
+      }
+
+      clearValidation() {
+        this.emailInput.style.borderColor = '';
+        this.emailInput.style.boxShadow = '';
+      }
+
+      setLoading(loading) {
+        this.isLoading = loading;
+        const btnText = this.submitBtn.querySelector('.btn-text');
+
+        if (loading) {
+          this.submitBtn.disabled = true;
+          this.submitBtn.classList.add('loading');
+          if (btnText) btnText.textContent = 'Joining...';
+        } else {
+          this.submitBtn.disabled = false;
+          this.submitBtn.classList.remove('loading');
+          if (btnText) btnText.textContent = 'Join Waitlist';
+        }
       }
 
       updateWaitlistCount() {
-        const stored = localStorage.getItem('prophyt_waitlist_count');
-        const count = stored ? parseInt(stored) : 1;
-        // Dynamic position based on actual signups
-        const positionEl = document.getElementById('dynamicPosition');
-        if (positionEl) {
-          positionEl.textContent = count;
+        if (!isLocalStorageAvailable()) {
+          return;
+        }
+        try {
+          const stored = localStorage.getItem('prophyt_waitlist_count');
+          const count = stored ? parseInt(stored) : 1;
+          // Dynamic position based on actual signups
+          const positionEl = document.getElementById('dynamicPosition');
+          if (positionEl) {
+            positionEl.textContent = count;
+          }
+        } catch (e) {
+          console.warn('Failed to read waitlist count:', e);
         }
       }
 
       handleSubmit(e) {
         e.preventDefault();
 
-        const email = this.emailInput.value.trim();
+        if (this.isLoading) return;
 
-        if (!this.validateEmail(email)) {
+        const email = this.emailInput.value.trim();
+        const normalizedEmail = email.toLowerCase().trim();
+
+        if (!this.validateEmail(normalizedEmail)) {
           this.showStatus('Please enter a valid email address.', 'error');
           return;
         }
 
-        // Check for duplicate
-        const existing = localStorage.getItem('prophyt_waitlist_emails');
-        const emails = existing ? JSON.parse(existing) : [];
-
-        if (emails.includes(email)) {
-          // Retrieve the user's original queue position from localStorage
-          const storedPosition = localStorage.getItem(`prophyt_queue_${email}`);
-          const position = storedPosition ? parseInt(storedPosition) : emails.indexOf(email) + 1;
-          this.showStatus('You\'re already on the list! Check your queue position below.', 'info');
-          this.showQueuePosition(position);
+        // Check localStorage availability
+        if (!isLocalStorageAvailable()) {
+          this.showStatus('Unable to save. Please enable cookies/localStorage.', 'error');
           return;
         }
 
-        // Add to waitlist
-        emails.push(email);
-        localStorage.setItem('prophyt_waitlist_emails', JSON.stringify(emails));
+        // Set loading state
+        this.setLoading(true);
 
-        // Update count based on actual emails
-        const count = emails.length;
-        localStorage.setItem('prophyt_waitlist_count', count.toString());
-        this.waitlistCount.textContent = count;
+        // Simulate async submission (replace with actual API call in production)
+        setTimeout(() => {
+          try {
+            // Check for duplicate (normalized comparison)
+            const existing = localStorage.getItem('prophyt_waitlist_emails');
+            let emails = [];
+            try {
+              emails = existing ? JSON.parse(existing) : [];
+            } catch (e) {
+              console.warn('Failed to parse stored emails:', e);
+              emails = [];
+            }
 
-        // Assign sequential queue position (honest counting)
-        const position = emails.length;
-        localStorage.setItem(`prophyt_queue_${email}`, position.toString());
+            // Fix: Normalize stored emails for comparison
+            const normalizedExisting = emails.map(e => e.toLowerCase().trim());
 
-        this.showStatus('Welcome to the waitlist!', 'success');
-        this.showQueuePosition(position);
+            if (normalizedExisting.includes(normalizedEmail)) {
+              // Find original email to get stored position
+              const originalIndex = normalizedExisting.indexOf(normalizedEmail);
+              const originalEmail = emails[originalIndex];
+              const storedPosition = localStorage.getItem(`prophyt_queue_${originalEmail}`);
+              const position = storedPosition ? parseInt(storedPosition) : originalIndex + 1;
+              this.showStatus('You\'re already on the list! Check your queue position below.', 'info');
+              this.showQueuePosition(position);
+              this.setLoading(false);
+              return;
+            }
 
-        this.emailInput.value = '';
+            // Add to waitlist (store original case)
+            emails.push(email);
+            try {
+              localStorage.setItem('prophyt_waitlist_emails', JSON.stringify(emails));
+            } catch (e) {
+              if (e.name === 'QuotaExceededError' || e.code === 22) {
+                this.showStatus('Storage full. Please clear browser data.', 'error');
+                this.setLoading(false);
+                return;
+              }
+              throw e;
+            }
+
+            // Update count based on actual emails
+            const count = emails.length;
+            try {
+              localStorage.setItem('prophyt_waitlist_count', count.toString());
+            } catch (e) {
+              console.warn('Failed to update count:', e);
+            }
+            if (this.waitlistCount) {
+              this.waitlistCount.textContent = count;
+            }
+
+            // Assign sequential queue position (honest counting)
+            const position = emails.length;
+            try {
+              localStorage.setItem(`prophyt_queue_${email}`, position.toString());
+            } catch (e) {
+              console.warn('Failed to save queue position:', e);
+            }
+
+            this.showStatus('Welcome to the waitlist!', 'success');
+            this.showQueuePosition(position);
+            this.clearValidation();
+
+            this.emailInput.value = '';
+          } catch (e) {
+            console.error('Form submission error:', e);
+            this.showStatus('An error occurred. Please try again.', 'error');
+          } finally {
+            this.setLoading(false);
+          }
+        }, 500); // Simulated network delay
       }
 
       validateEmail(email) {
@@ -6257,9 +5220,12 @@
 
         // Route based on familiarity
         if (familiarity === 'native') {
-          // DCA-Native: Fast-track to demo
+          // DCA-Native: Fast-track to waitlist
           this.hideQuestion();
-          this.scrollToDemo();
+          const waitlistSection = document.getElementById('signup');
+          if (waitlistSection) {
+            waitlistSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
         } else {
           // DCA-Curious/Newcomer: Show explainer first
           this.showExplainer();
@@ -6280,13 +5246,6 @@
           this.familiarityContainer.style.display = 'none';
         }, 300);
       }
-
-      scrollToDemo() {
-        const demoSection = document.getElementById('demo');
-        if (demoSection) {
-          demoSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }
     }
 
     // ============================================
@@ -6297,11 +5256,27 @@
         this.canvas = document.getElementById('gridViz');
         if (!this.canvas) return;
         this.ctx = this.canvas.getContext('2d');
+        // Fix: Store animation frame ID for cleanup
+        this.animationFrame = null;
+        this.isDestroyed = false;
         this.particles = document.getElementById('gridVizParticles');
         if (!this.particles) {
           this.particles = document.createElement('div');
           this.particles.className = 'particles';
           this.canvas.parentElement.appendChild(this.particles);
+        }
+
+        // FIX: Particle pool for memory efficiency
+        this.particlePool = [];
+        this.activeParticles = [];
+        const POOL_SIZE = 10;
+
+        for (let i = 0; i < POOL_SIZE; i++) {
+          const particle = document.createElement('div');
+          particle.className = 'particle';
+          particle.style.display = 'none';
+          this.particles.appendChild(particle);
+          this.particlePool.push(particle);
         }
 
         // Create notification element
@@ -6316,7 +5291,7 @@
 
         // Initialize canvas dimensions
         this.resize();
-        window.addEventListener('resize', () => this.resize());
+        window.addEventListener('resize', debounce(() => this.resize(), 100));
 
         // Proper proportions
         this.candleWidth = 10;
@@ -6676,15 +5651,38 @@
         this.targetPrice = this.buyLevels[0]; // Target $96 from current price (~$103)
       }
 
+      // FIX: Particle pooling - reuse particles instead of creating new ones
       createParticle(text, color) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
+        // Get a particle from the pool or create one if pool is empty
+        let particle = this.particlePool.pop();
+
+        if (!particle) {
+          // Pool exhausted, create a new one (rare case)
+          particle = document.createElement('div');
+          particle.className = 'particle';
+          this.particles.appendChild(particle);
+        }
+
+        // Configure particle
         particle.textContent = text;
         particle.style.color = color;
         particle.style.left = '35%';
         particle.style.top = '50%';
-        this.particles.appendChild(particle);
-        setTimeout(() => particle.remove(), 1200);
+        particle.style.display = 'block';
+
+        // Track active particle with timeout ID
+        const timeoutId = setTimeout(() => {
+          particle.style.display = 'none';
+          // Return particle to pool for reuse
+          this.particlePool.push(particle);
+          // Remove from active tracking
+          const index = this.activeParticles.indexOf(timeoutId);
+          if (index > -1) {
+            this.activeParticles.splice(index, 1);
+          }
+        }, 1200);
+
+        this.activeParticles.push(timeoutId);
       }
 
       showNotification(profit) {
@@ -6856,15 +5854,38 @@
       }
 
       animate() {
+        if (this.isDestroyed) return;
         this.update();
         this.draw();
-        requestAnimationFrame(() => this.animate());
+        this.animationFrame = requestAnimationFrame(() => this.animate());
+      }
+
+      // Fix: Add destroy method for proper cleanup
+      destroy() {
+        this.isDestroyed = true;
+        if (this.animationFrame) {
+          cancelAnimationFrame(this.animationFrame);
+          this.animationFrame = null;
+        }
+        // FIX: Clean up active particle timeouts
+        this.activeParticles.forEach(timeoutId => clearTimeout(timeoutId));
+        this.activeParticles = [];
       }
     }
 
     // ============================================
     // INITIALIZATION
     // ============================================
+
+    // Global error handler for uncaught errors
+    window.addEventListener('error', function(event) {
+      console.error('Global error caught:', event.error);
+    });
+
+    window.addEventListener('unhandledrejection', function(event) {
+      console.error('Unhandled promise rejection:', event.reason);
+    });
+
     document.addEventListener('DOMContentLoaded', () => {
       // ============================================
       // PAGE LOADER - Time-based trigger (3.5s total)
@@ -6887,12 +5908,12 @@
         'h1, h2, h3, h4, p, .stat-card, .feature-card, .step-card, .faq-item, ' +
         '.roadmap-item, .philosophy-card, .compare-card, .trust-card, .btn-primary, ' +
         '.hero-positioning-badge, .simplicity-promise, .cta-trust-badges, ' +
-        '.demo-chart, .grid-viz-container, .ticker-wrap, section > div, nav > div, ' +
+        '.ticker-wrap, section > div, nav > div, ' +
         '[data-reveal]';
 
       const excludeSelectors = [
         '.page-loader', '.loader-content', '.loader-letter',
-        '#pageLoader', '[data-no-reveal]'
+        '#pageLoader', '[data-no-reveal]', '.max-w-7xl'
       ];
 
       // Get viewport height for above/below fold detection
@@ -7020,7 +6041,6 @@
               requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                   const revealElements = getRevealableElements();
-                  console.log('Reveal elements found:', revealElements.aboveFold.length, 'above,', revealElements.belowFold.length, 'below');
 
                   // Reveal above-fold elements with stagger
                   revealAboveFold(revealElements.aboveFold, 0);
@@ -7045,70 +6065,70 @@
       const gridViz = new AutoGridViz();
 
       // GRID VISUALIZATION STICKY BACKGROUND
-      // Moves element to body level to escape stacking contexts
+      // Simplified implementation - single debounce, no direction tracking
       // ============================================
       const gridVizContainer = document.querySelector('.grid-viz-container');
       if (gridVizContainer) {
-        // Store original position for restoration
-        const originalParent = gridVizContainer.parentNode;
-        const originalNextSibling = gridVizContainer.nextElementSibling;
-
         // Create a sentinel element that stays in the original position
-        // This avoids the feedback loop where observing the grid-viz itself
-        // causes infinite triggers when position: fixed moves it into viewport
         const sentinel = document.createElement('div');
-        sentinel.style.cssText = 'position: absolute; height: 1px; width: 100%; visibility: hidden; pointer-events: none;';
-        originalParent.insertBefore(sentinel, gridVizContainer);
+        sentinel.style.cssText = 'height: 10px; width: 100%; visibility: hidden; pointer-events: none;';
+        gridVizContainer.parentNode.insertBefore(sentinel, gridVizContainer);
 
         let isSticky = false;
+        let lastTransitionTime = 0;
+        const DEBOUNCE_MS = 100; // Single debounce value for both transitions
+
+        // Core transition logic - simplified with single debounce
+        const evaluateStickyState = (shouldBeSticky) => {
+          const now = Date.now();
+          const timeSinceLastTransition = now - lastTransitionTime;
+
+          // Apply debounce
+          if (timeSinceLastTransition < DEBOUNCE_MS) {
+            return;
+          }
+
+          if (shouldBeSticky !== isSticky) {
+            lastTransitionTime = now;
+            isSticky = shouldBeSticky;
+
+            if (shouldBeSticky) {
+              gridVizContainer.classList.add('sticky-background');
+            } else {
+              gridVizContainer.classList.remove('sticky-background');
+            }
+
+            requestAnimationFrame(() => {
+              if (gridViz && gridViz.resize) {
+                gridViz.resize();
+              }
+            });
+          }
+        };
 
         const stickyBackgroundObserver = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
             const shouldBeSticky = !entry.isIntersecting;
-
-            if (shouldBeSticky && !isSticky) {
-              // Activate sticky mode - move to body level (at beginning for DOM order)
-              isSticky = true;
-              gridVizContainer.classList.add('sticky-background');
-              document.body.insertBefore(gridVizContainer, document.body.firstChild);
-
-              // Resize canvas to fill viewport
-              requestAnimationFrame(() => {
-                if (gridViz && gridViz.resize) {
-                  gridViz.resize();
-                }
-              });
-            } else if (!shouldBeSticky && isSticky) {
-              // Deactivate sticky mode - restore to original position
-              isSticky = false;
-              gridVizContainer.classList.remove('sticky-background');
-
-              // Restore to original position
-              if (originalNextSibling) {
-                originalParent.insertBefore(gridVizContainer, originalNextSibling);
-              } else {
-                originalParent.appendChild(gridVizContainer);
-              }
-
-              // Resize canvas back to container size
-              requestAnimationFrame(() => {
-                if (gridViz && gridViz.resize) {
-                  gridViz.resize();
-                }
-              });
-            }
+            evaluateStickyState(shouldBeSticky);
           });
         }, {
           threshold: 0,
-          rootMargin: '0px 0px 0px 0px'
+          // rootMargin creates hysteresis zone
+          rootMargin: '-100px 0px 0px 0px'
         });
 
         // Observe the sentinel, not the container itself
         stickyBackgroundObserver.observe(sentinel);
+
+        // Cleanup on page unload
+        const cleanupStickyBackground = () => {
+          stickyBackgroundObserver.disconnect();
+          sentinel.remove();
+        };
+
+        window.addEventListener('pagehide', cleanupStickyBackground);
       }
 
-      // Initialize demo calculator
-      initDemoCalculator();
       const waitlistForm = new WaitlistForm();
       const ticker = new Ticker();
       const twoPathOnboarding = new TwoPathOnboarding();
