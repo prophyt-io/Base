@@ -3463,12 +3463,12 @@
           <span class="text-xs font-bold text-accent-primary font-jetbrains tracking-wide">READ-ONLY APIS</span>
         </div>
 
-        <!-- No Credit Card Badge -->
-        <div class="flex items-center gap-2 px-3 py-1.5 bg-bg-tertiary rounded-full">
+        <!-- Execution First Badge -->
+        <div class="flex items-center gap-2 px-3 py-1.5 bg-accent-warning/10 rounded-full border border-accent-warning/30">
           <svg class="w-4 h-4 text-accent-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m3 0h1m3 0h1m-7 4h12a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
           </svg>
-          <span class="text-sm font-semibold text-accent-warning">No CC Required</span>
+          <span class="text-sm font-semibold text-accent-warning">Execution First</span>
         </div>
 
         <!-- Reliability Badge - Honest -->
@@ -3528,31 +3528,6 @@
           <a href="#comparison" class="px-8 py-4 border border-accent-secondary text-accent-secondary rounded-lg font-semibold text-lg hover:bg-accent-secondary/10 transition-all duration-300 font-bricolage">
             See the Difference
           </a>
-        </div>
-
-        <!-- CTA Trust Badges - Wealthfront Style -->
-        <div class="cta-trust-badges">
-          <div class="cta-trust-badge">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-              <polyline points="22 4 12 14.01 9 11.01"/>
-            </svg>
-            <span>Free Forever Tier</span>
-          </div>
-          <div class="cta-trust-badge">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
-              <line x1="1" y1="10" x2="23" y2="10"/>
-            </svg>
-            <span>No Credit Card Required</span>
-          </div>
-          <div class="cta-trust-badge">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-            </svg>
-            <span>Read-Only APIs</span>
-          </div>
         </div>
 
         <!-- Two-Path Onboarding - Per Style Guide v4 -->
@@ -3960,9 +3935,12 @@
 
 
   <!-- Comparison Section -->
-  <section id="comparison" class="py-24 px-6 bg-bg-secondary">
-    <div class="max-w-6xl mx-auto">
-      <!-- Psychology Banner - Cryptohopper Style -->
+  <section id="comparison" class="py-24 px-6 bg-bg-secondary relative overflow-hidden">
+    <!-- Subtle background accent -->
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-accent-primary/[0.02] to-transparent pointer-events-none"></div>
+
+    <div class="max-w-6xl mx-auto relative">
+      <!-- Psychology Banner -->
       <div class="psychology-banner">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
@@ -3970,70 +3948,134 @@
         <span>Remove the human error. <strong>Keep the human oversight.</strong></span>
       </div>
 
-      <h2 class="text-4xl font-bold text-center mb-16 font-bricolage">The Difference is Clear</h2>
+      <h2 class="text-4xl md:text-5xl font-bold text-center mb-4 font-bricolage">The Difference is <span class="text-accent-primary">Clear</span></h2>
+      <p class="text-center text-text-secondary mb-16 max-w-2xl mx-auto font-bricolage text-lg">Stop gambling. Start executing. See why professional traders never rely on emotion.</p>
 
-      <div class="grid md:grid-cols-2 gap-8">
+      <div class="grid md:grid-cols-2 gap-6 lg:gap-8">
         <!-- Traditional -->
-        <div class="card group">
-          <div class="absolute top-4 left-1/2 -translate-x-1/2 bg-accent-danger/20 text-bg-primary px-4 py-1.5 text-xs font-bold rounded-full font-jetbrains">
-            TRADITIONAL
+        <div class="card group border-accent-danger/20 hover:border-accent-danger/40 transition-colors duration-300">
+          <div class="absolute top-4 left-1/2 -translate-x-1/2 bg-accent-danger/15 text-accent-danger px-4 py-1.5 text-xs font-bold rounded-full font-jetbrains uppercase tracking-wider">
+            Traditional Trading
           </div>
-          <h3 class="text-2xl font-bold mb-4 pt-9 text-accent-danger font-bricolage group-hover:scale-105 transition-transform">Emotional. Reactive. Costly.</h3>
-          <ul class="space-y-3 text-text-secondary font-bricolage">
-            <li class="flex items-start gap-3">
-              <span class="text-accent-danger">✗</span>
-              <span>Expected losses as part of strategy</span>
+          <h3 class="text-2xl font-bold mb-6 pt-10 text-accent-danger font-bricolage">Emotional. Reactive. Costly.</h3>
+          <ul class="space-y-4 text-text-primary font-bricolage">
+            <li class="flex items-start gap-3 group/item">
+              <span class="text-accent-danger mt-1 text-lg">✗</span>
+              <div>
+                <span class="font-semibold">Accept losses</span>
+                <span class="text-text-secondary"> as "part of the game"</span>
+              </div>
             </li>
-            <li class="flex items-start gap-3">
-              <span class="text-accent-danger">✗</span>
-              <span>Market orders chase price</span>
+            <li class="flex items-start gap-3 group/item">
+              <span class="text-accent-danger mt-1 text-lg">✗</span>
+              <div>
+                <span class="font-semibold">Market orders</span>
+                <span class="text-text-secondary"> guarantee worst execution</span>
+              </div>
             </li>
-            <li class="flex items-start gap-3">
-              <span class="text-accent-danger">✗</span>
-              <span>Fear of missing out drives decisions</span>
+            <li class="flex items-start gap-3 group/item">
+              <span class="text-accent-danger mt-1 text-lg">✗</span>
+              <div>
+                <span class="font-semibold">FOMO drives decisions</span>
+                <span class="text-text-secondary"> instead of data</span>
+              </div>
             </li>
-            <li class="flex items-start gap-3">
-              <span class="text-accent-danger">✗</span>
-              <span>No entry strategy, just hope</span>
+            <li class="flex items-start gap-3 group/item">
+              <span class="text-accent-danger mt-1 text-lg">✗</span>
+              <div>
+                <span class="font-semibold">No entry plan</span>
+                <span class="text-text-secondary"> — just hope and prayers</span>
+              </div>
             </li>
-            <li class="flex items-start gap-3">
-              <span class="text-accent-danger">✗</span>
-              <span>Panic buy at the top</span>
+            <li class="flex items-start gap-3 group/item">
+              <span class="text-accent-danger mt-1 text-lg">✗</span>
+              <div>
+                <span class="font-semibold">Panic buys at the top</span>
+                <span class="text-text-secondary">, sells at the bottom</span>
+              </div>
             </li>
           </ul>
+          <!-- Bottom stat -->
+          <div class="mt-8 pt-6 border-t border-accent-danger/20">
+            <div class="flex items-center gap-3 text-accent-danger/80">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
+              </svg>
+              <span class="font-jetbrains text-sm">Avg. retail loss: <span class="font-bold">-36%</span></span>
+            </div>
+          </div>
         </div>
 
         <!-- Prophyt -->
-        <div class="card group">
-          <div class="absolute top-4 left-1/2 -translate-x-1/2 bg-accent-primary/20 text-accent-primary px-4 py-1.5 text-xs font-bold rounded-full font-jetbrains border border-accent-primary/30">
-            INSTITUTIONAL-GRADE
+        <div class="card group border-accent-primary/30 hover:border-accent-primary/60 transition-colors duration-300 relative">
+          <!-- Glow effect -->
+          <div class="absolute inset-0 bg-gradient-to-br from-accent-primary/5 to-accent-secondary/5 rounded-2xl pointer-events-none"></div>
+
+          <div class="absolute top-4 left-1/2 -translate-x-1/2 bg-accent-primary/15 text-accent-primary px-4 py-1.5 text-xs font-bold rounded-full font-jetbrains uppercase tracking-wider border border-accent-primary/30">
+            Prophyt Method
           </div>
-          <h3 class="text-2xl font-bold mb-4 pt-9 text-accent-primary font-bricolage group-hover:scale-105 transition-transform">Calculated. Precise. Profitable.</h3>
-          <ul class="space-y-3 text-text-secondary font-bricolage">
-            <li class="flex items-start gap-3">
-              <span class="text-accent-primary">✓</span>
-              <span>Drawdowns are buying opportunities</span>
+          <h3 class="text-2xl font-bold mb-6 pt-10 text-accent-primary font-bricolage">Calculated. Precise. Profitable.</h3>
+          <ul class="space-y-4 text-text-primary font-bricolage relative">
+            <li class="flex items-start gap-3 group/item">
+              <span class="text-accent-primary mt-1 text-lg">✓</span>
+              <div>
+                <span class="font-semibold">Drawdowns are opportunities</span>
+                <span class="text-text-secondary"> to stack lower</span>
+              </div>
             </li>
-            <li class="flex items-start gap-3">
-              <span class="text-accent-primary">✓</span>
-              <span>Limit orders wait for your price</span>
+            <li class="flex items-start gap-3 group/item">
+              <span class="text-accent-primary mt-1 text-lg">✓</span>
+              <div>
+                <span class="font-semibold">Limit orders</span>
+                <span class="text-text-secondary"> wait for YOUR price</span>
+              </div>
             </li>
-            <li class="flex items-start gap-3">
-              <span class="text-accent-primary">✓</span>
-              <span>Volatility-adjusted positioning</span>
+            <li class="flex items-start gap-3 group/item">
+              <span class="text-accent-primary mt-1 text-lg">✓</span>
+              <div>
+                <span class="font-semibold">Volatility-adjusted sizing</span>
+                <span class="text-text-secondary"> protects capital</span>
+              </div>
             </li>
-            <li class="flex items-start gap-3">
-              <span class="text-accent-primary">✓</span>
-              <span>AI-optimized DCA allocation</span>
+            <li class="flex items-start gap-3 group/item">
+              <span class="text-accent-primary mt-1 text-lg">✓</span>
+              <div>
+                <span class="font-semibold">AI-optimized DCA</span>
+                <span class="text-text-secondary"> removes guesswork</span>
+              </div>
+            </li>
+            <li class="flex items-start gap-3 group/item">
+              <span class="text-accent-primary mt-1 text-lg">✓</span>
+              <div>
+                <span class="font-semibold">Fibonacci precision entries</span>
+                <span class="text-text-secondary"> with mathematical edge</span>
+              </div>
             </li>
           </ul>
-
-          <!-- Value Prop Badge -->
-          <div class="competitive-stat-badge">
-            <span class="stat-number">Systematic</span>
-            <span class="stat-label">execution beats emotional trading every time</span>
+          <!-- Bottom stat -->
+          <div class="mt-8 pt-6 border-t border-accent-primary/20 relative">
+            <div class="flex items-center gap-3">
+              <svg class="w-5 h-5 text-accent-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+              </svg>
+              <span class="font-jetbrains text-sm text-accent-primary">
+                <span class="font-bold text-base">Systematic</span> execution beats emotion
+                <span class="text-accent-primary font-bold">every time</span>
+              </span>
+            </div>
           </div>
         </div>
+      </div>
+
+      <!-- Bottom CTA -->
+      <div class="mt-16 text-center">
+        <p class="text-text-secondary mb-6 font-bricolage">Join traders who stopped gambling and started executing.</p>
+        <a href="#waitlist" class="inline-flex items-center gap-2 px-8 py-4 bg-accent-primary text-bg-primary font-bold rounded-xl font-bricolage hover:bg-accent-primary/90 transition-all hover:scale-105 hover:shadow-lg hover:shadow-accent-primary/20">
+          Get Early Access
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
       </div>
     </div>
   </section>
@@ -4423,7 +4465,7 @@
             </svg>
           </div>
           <h3 class="trust-pillar-title">Zero Hidden Fees</h3>
-          <p class="trust-pillar-description">No platform fees. No credit card required. Free forever tier available.</p>
+          <p class="trust-pillar-description">No platform fees. Free forever tier available. Execution first.</p>
         </div>
 
         <!-- Battle-Tested -->
@@ -4532,7 +4574,7 @@
           </button>
           <div class="faq-answer" id="faq-answer-5" aria-hidden="true">
             <div class="faq-answer-content">
-              Yes, there's a <strong>free forever tier</strong> for individual traders. No credit card required to start. We may introduce premium features for power users or institutional clients later, but core execution tools will always have a free option. We're indie-built—no VC pressure to monetize users.
+              Yes, there's a <strong>free forever tier</strong> for individual traders. We're execution first—start immediately, no payment needed. We may introduce premium features for power users or institutional clients later, but core execution tools will always have a free option. We're indie-built—no VC pressure to monetize users.
             </div>
           </div>
         </div>

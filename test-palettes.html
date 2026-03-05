@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prophyt - Color Palette Comparison</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      background-color: #050505;
+      color: #fff;
+      padding: 40px;
+    }
+
+    .palette-section {
+      margin-bottom: 80px;
+      padding: 40px;
+      border-radius: 24px;
+    }
+
+    .palette-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .palette-subtitle {
+      font-size: 1rem;
+      opacity: 0.7;
+      margin-bottom: 32px;
+    }
+
+    .color-swatches {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .swatch {
+      width: 80px;
+      height: 80px;
+      border-radius: 12px;
+      display: flex;
+      align-items: flex-end;
+      padding: 8px;
+      font-size: 0.625rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .elements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    /* Card Styles */
+    .card {
+      padding: 24px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+    }
+
+    .card-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .card-text {
+      font-size: 0.875rem;
+      opacity: 0.7;
+      line-height: 1.6;
+    }
+
+    /* Button Styles */
+    .btn-primary {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-right: 12px;
+      margin-bottom: 12px;
+    }
+
+    .btn-secondary {
+      padding: 12px 24px;
+      background: transparent;
+      border-radius: 10px;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-right: 12px;
+      margin-bottom: 12px;
+    }
+
+    /* Input Styles */
+    input[type="email"] {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      margin-bottom: 12px;
+    }
+
+    input:focus {
+      outline: none;
+    }
+
+    /* Stat Card */
+    .stat-card {
+      padding: 24px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .stat-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      opacity: 0.7;
+    }
+
+    /* Badge Styles */
+    .urgency-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+    }
+
+    .urgency-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .trust-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 100px;
+      font-size: 0.875rem;
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+
+    /* Progress Bar */
+    .progress-bar {
+      height: 6px;
+      border-radius: 3px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 3px;
+      width: 65%;
+    }
+
+    /* FAQ Item */
+    .faq-item {
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .faq-question {
+      width: 100%;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .faq-answer {
+      padding: 0 20px 16px;
+      font-size: 0.875rem;
+      opacity: 0.7;
+      line-height: 1.6;
+    }
+
+    /* Ticker */
+    .ticker {
+      padding: 16px 24px;
+      border-radius: 12px;
+      display: flex;
+      gap: 32px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.875rem;
+    }
+
+    .ticker-item.positive { opacity: 1; }
+    .ticker-item.negative { opacity: 0.8; }
+
+    /* Section Divider */
+    .section-divider {
+      height: 1px;
+      margin: 60px 0;
+      opacity: 0.1;
+    }
+  </style>
+</head>
+<body>
+  <h1 style="font-size: 3rem; font-weight: 800; margin-bottom: 16px; text-align: center;">Color Palette Comparison</h1>
+  <p style="text-align: center; opacity: 0.5; margin-bottom: 60px;">Testing 3 unique palettes for Prophyt</p>
+
+  <!-- ============================================ -->
+  <!-- OPTION 1: CURRENT (Neon Matrix) -->
+  <!-- ============================================ -->
+  <section class="palette-section" style="background: #0a0e14; --border: rgba(255, 255, 255, 0.08);">
+    <h2 class="palette-title" style="color: #00ff88;">CURRENT: Neon Matrix</h2>
+    <p class="palette-subtitle">Your existing palette - dark theme with neon green/cyan accents</p>
+
+    <div class="color-swatches">
+      <div class="swatch" style="background: #0a0e14; border: 1px solid rgba(255,255,255,0.1);">Primary</div>
+      <div class="swatch" style="background: #12171f;">Secondary</div>
+      <div class="swatch" style="background: #1a2332;">Tertiary</div>
+      <div class="swatch" style="background: #00ff88; color: #000;">Primary</div>
+      <div class="swatch" style="background: #00d4ff; color: #000;">Secondary</div>
+      <div class="swatch" style="background: #ff3366;">Danger</div>
+      <div class="swatch" style="background: #ffd60a; color: #000;">Warning</div>
+      <div class="swatch" style="background: #e6edf3; color: #000;">Text</div>
+    </div>
+
+    <div class="elements-grid">
+      <!-- Card -->
+      <div class="card" style="background: #12171f;">
+        <h3 class="card-title">DCA Ladder Strategy</h3>
+        <p class="card-text">AI-powered dollar-cost averaging with Fibonacci precision. No emotion, just execution.</p>
+        <div style="margin-top: 16px;">
+          <span style="color: #00ff88; font-family: 'JetBrains Mono'; font-size: 0.875rem;">+12.4%</span>
+          <span style="opacity: 0.5; margin-left: 8px;">30-day return</span>
+        </div>
+      </div>
+
+      <!-- Buttons & Input -->
+      <div>
+        <button class="btn-primary" style="background: #00ff88; color: #0a0e14;">Join Waitlist</button>
+        <button class="btn-secondary" style="border: 1px solid #00ff88; color: #00ff88;">Learn More</button>
+        <input type="email" placeholder="Enter your email" style="background: #1a2332; border: 1px solid var(--border); color: #e6edf3;">
+        <input type="email" placeholder="Focused state" style="background: #0a0e14; border: 1px solid #00ff88; box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.15); color: #e6edf3;">
+      </div>
+
+      <!-- Stat Card -->
+      <div class="stat-card" style="background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);">
+        <div class="stat-number" style="color: #00ff88;">847</div>
+        <div class="stat-label">Active Traders</div>
+      </div>
+
+      <!-- Badges -->
+      <div>
+        <div class="urgency-badge" style="background: rgba(255, 214, 10, 0.08); border: 1px solid rgba(255, 214, 10, 0.25);">
+          <div class="urgency-dot" style="background: #ffd60a;"></div>
+          <span style="font-family: 'JetBrains Mono'; font-size: 0.8125rem; color: #ffd60a; text-transform: uppercase; letter-spacing: 0.08em;">Limited Beta Access</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap;">
+          <span class="trust-badge" style="background: #1a2332; border: 1px solid var(--border);">🔒 Bank-level Security</span>
+          <span class="trust-badge" style="background: #1a2332; border: 1px solid var(--border);">⚡ Real-time Data</span>
+        </div>
+      </div>
+
+      <!-- Ticker -->
+      <div class="ticker" style="background: #12171f; border: 1px solid var(--border);">
+        <span class="ticker-item positive" style="color: #00ff88;">AAPL +2.34%</span>
+        <span class="ticker-item negative" style="color: #ff3366;">TSLA -1.12%</span>
+        <span class="ticker-item positive" style="color: #00ff88;">NVDA +4.56%</span>
+        <span class="ticker-item" style="color: #00d4ff;">BTC $67,432</span>
+      </div>
+
+      <!-- Progress Bar -->
+      <div>
+        <p style="margin-bottom: 8px; font-size: 0.875rem;">Portfolio Allocation</p>
+        <div class="progress-bar" style="background: #1a2332;">
+          <div class="progress-fill" style="background: linear-gradient(90deg, #00ff88, #00d4ff);"></div>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="faq-item" style="background: #12171f;">
+        <button class="faq-question" style="color: #e6edf3;">
+          How does AI optimization work?
+          <span style="color: #00ff88;">+</span>
+        </button>
+        <div class="faq-answer" style="color: #959ea5;">Our AI analyzes market conditions and adjusts your DCA intervals dynamically.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider" style="background: linear-gradient(90deg, transparent, #fff, transparent);"></div>
+
+  <!-- ============================================ -->
+  <!-- OPTION 2: ARCTIC SLATE -->
+  <!-- ============================================ -->
+  <section class="palette-section" style="background: #0f1419; --border: rgba(255, 255, 255, 0.06);">
+    <h2 class="palette-title" style="color: #7dd3c0;">OPTION 1: Arctic Slate</h2>
+    <p class="palette-subtitle">Muted, sophisticated teal - desaturated instead of neon-bright</p>
+
+    <div class="color-swatches">
+      <div class="swatch" style="background: #0f1419; border: 1px solid rgba(255,255,255,0.1);">Primary</div>
+      <div class="swatch" style="background: #1c2127;">Secondary</div>
+      <div class="swatch" style="background: #2a3038;">Tertiary</div>
+      <div class="swatch" style="background: #7dd3c0; color: #000;">Primary</div>
+      <div class="swatch" style="background: #9ee5d5; color: #000;">Secondary</div>
+      <div class="swatch" style="background: #d97373;">Danger</div>
+      <div class="swatch" style="background: #e5c87d; color: #000;">Warning</div>
+      <div class="swatch" style="background: #eceff4; color: #000;">Text</div>
+    </div>
+
+    <div class="elements-grid">
+      <!-- Card -->
+      <div class="card" style="background: #1c2127;">
+        <h3 class="card-title">DCA Ladder Strategy</h3>
+        <p class="card-text">AI-powered dollar-cost averaging with Fibonacci precision. No emotion, just execution.</p>
+        <div style="margin-top: 16px;">
+          <span style="color: #7dd3c0; font-family: 'JetBrains Mono'; font-size: 0.875rem;">+12.4%</span>
+          <span style="opacity: 0.5; margin-left: 8px;">30-day return</span>
+        </div>
+      </div>
+
+      <!-- Buttons & Input -->
+      <div>
+        <button class="btn-primary" style="background: #7dd3c0; color: #0f1419;">Join Waitlist</button>
+        <button class="btn-secondary" style="border: 1px solid #7dd3c0; color: #7dd3c0;">Learn More</button>
+        <input type="email" placeholder="Enter your email" style="background: #2a3038; border: 1px solid var(--border); color: #eceff4;">
+        <input type="email" placeholder="Focused state" style="background: #0f1419; border: 1px solid #7dd3c0; box-shadow: 0 0 0 3px rgba(125, 211, 192, 0.15); color: #eceff4;">
+      </div>
+
+      <!-- Stat Card -->
+      <div class="stat-card" style="background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);">
+        <div class="stat-number" style="color: #7dd3c0;">847</div>
+        <div class="stat-label">Active Traders</div>
+      </div>
+
+      <!-- Badges -->
+      <div>
+        <div class="urgency-badge" style="background: rgba(229, 200, 125, 0.08); border: 1px solid rgba(229, 200, 125, 0.25);">
+          <div class="urgency-dot" style="background: #e5c87d;"></div>
+          <span style="font-family: 'JetBrains Mono'; font-size: 0.8125rem; color: #e5c87d; text-transform: uppercase; letter-spacing: 0.08em;">Limited Beta Access</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap;">
+          <span class="trust-badge" style="background: #2a3038; border: 1px solid var(--border);">Bank-level Security</span>
+          <span class="trust-badge" style="background: #2a3038; border: 1px solid var(--border);">Real-time Data</span>
+        </div>
+      </div>
+
+      <!-- Ticker -->
+      <div class="ticker" style="background: #1c2127; border: 1px solid var(--border);">
+        <span class="ticker-item positive" style="color: #7dd3c0;">AAPL +2.34%</span>
+        <span class="ticker-item negative" style="color: #d97373;">TSLA -1.12%</span>
+        <span class="ticker-item positive" style="color: #7dd3c0;">NVDA +4.56%</span>
+        <span class="ticker-item" style="color: #9ee5d5;">BTC $67,432</span>
+      </div>
+
+      <!-- Progress Bar -->
+      <div>
+        <p style="margin-bottom: 8px; font-size: 0.875rem;">Portfolio Allocation</p>
+        <div class="progress-bar" style="background: #2a3038;">
+          <div class="progress-fill" style="background: linear-gradient(90deg, #7dd3c0, #9ee5d5);"></div>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="faq-item" style="background: #1c2127;">
+        <button class="faq-question" style="color: #eceff4;">
+          How does AI optimization work?
+          <span style="color: #7dd3c0;">+</span>
+        </button>
+        <div class="faq-answer" style="color: #9ca3ab;">Our AI analyzes market conditions and adjusts your DCA intervals dynamically.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider" style="background: linear-gradient(90deg, transparent, #fff, transparent);"></div>
+
+  <!-- ============================================ -->
+  <!-- OPTION 3: COPPER & INK -->
+  <!-- ============================================ -->
+  <section class="palette-section" style="background: #0d0d0d; --border: rgba(255, 255, 255, 0.06);">
+    <h2 class="palette-title" style="color: #d4a574;">OPTION 2: Copper & Ink</h2>
+    <p class="palette-subtitle">Warm metallics - premium luxury feel, unique in fintech</p>
+
+    <div class="color-swatches">
+      <div class="swatch" style="background: #0d0d0d; border: 1px solid rgba(255,255,255,0.1);">Primary</div>
+      <div class="swatch" style="background: #1a1714;">Secondary</div>
+      <div class="swatch" style="background: #2a2420;">Tertiary</div>
+      <div class="swatch" style="background: #d4a574; color: #000;">Primary</div>
+      <div class="swatch" style="background: #e8c4a0; color: #000;">Secondary</div>
+      <div class="swatch" style="background: #c45c5c;">Danger</div>
+      <div class="swatch" style="background: #d4a574; color: #000;">Warning</div>
+      <div class="swatch" style="background: #f5f0eb; color: #000;">Text</div>
+    </div>
+
+    <div class="elements-grid">
+      <!-- Card -->
+      <div class="card" style="background: #1a1714;">
+        <h3 class="card-title">DCA Ladder Strategy</h3>
+        <p class="card-text">AI-powered dollar-cost averaging with Fibonacci precision. No emotion, just execution.</p>
+        <div style="margin-top: 16px;">
+          <span style="color: #d4a574; font-family: 'JetBrains Mono'; font-size: 0.875rem;">+12.4%</span>
+          <span style="opacity: 0.5; margin-left: 8px;">30-day return</span>
+        </div>
+      </div>
+
+      <!-- Buttons & Input -->
+      <div>
+        <button class="btn-primary" style="background: #d4a574; color: #0d0d0d;">Join Waitlist</button>
+        <button class="btn-secondary" style="border: 1px solid #d4a574; color: #d4a574;">Learn More</button>
+        <input type="email" placeholder="Enter your email" style="background: #2a2420; border: 1px solid var(--border); color: #f5f0eb;">
+        <input type="email" placeholder="Focused state" style="background: #0d0d0d; border: 1px solid #d4a574; box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.15); color: #f5f0eb;">
+      </div>
+
+      <!-- Stat Card -->
+      <div class="stat-card" style="background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);">
+        <div class="stat-number" style="color: #d4a574;">847</div>
+        <div class="stat-label">Active Traders</div>
+      </div>
+
+      <!-- Badges -->
+      <div>
+        <div class="urgency-badge" style="background: rgba(212, 165, 116, 0.08); border: 1px solid rgba(212, 165, 116, 0.25);">
+          <div class="urgency-dot" style="background: #d4a574;"></div>
+          <span style="font-family: 'JetBrains Mono'; font-size: 0.8125rem; color: #d4a574; text-transform: uppercase; letter-spacing: 0.08em;">Limited Beta Access</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap;">
+          <span class="trust-badge" style="background: #2a2420; border: 1px solid var(--border);">Bank-level Security</span>
+          <span class="trust-badge" style="background: #2a2420; border: 1px solid var(--border);">Real-time Data</span>
+        </div>
+      </div>
+
+      <!-- Ticker -->
+      <div class="ticker" style="background: #1a1714; border: 1px solid var(--border);">
+        <span class="ticker-item positive" style="color: #d4a574;">AAPL +2.34%</span>
+        <span class="ticker-item negative" style="color: #c45c5c;">TSLA -1.12%</span>
+        <span class="ticker-item positive" style="color: #d4a574;">NVDA +4.56%</span>
+        <span class="ticker-item" style="color: #e8c4a0;">BTC $67,432</span>
+      </div>
+
+      <!-- Progress Bar -->
+      <div>
+        <p style="margin-bottom: 8px; font-size: 0.875rem;">Portfolio Allocation</p>
+        <div class="progress-bar" style="background: #2a2420;">
+          <div class="progress-fill" style="background: linear-gradient(90deg, #d4a574, #e8c4a0);"></div>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="faq-item" style="background: #1a1714;">
+        <button class="faq-question" style="color: #f5f0eb;">
+          How does AI optimization work?
+          <span style="color: #d4a574;">+</span>
+        </button>
+        <div class="faq-answer" style="color: #a39e99;">Our AI analyzes market conditions and adjusts your DCA intervals dynamically.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider" style="background: linear-gradient(90deg, transparent, #fff, transparent);"></div>
+
+  <!-- ============================================ -->
+  <!-- OPTION 4: VOLCANIC -->
+  <!-- ============================================ -->
+  <section class="palette-section" style="background: #0f0c0a; --border: rgba(255, 255, 255, 0.06);">
+    <h2 class="palette-title" style="color: #ff6b4a;">OPTION 3: Volcanic</h2>
+    <p class="palette-subtitle">Bold warm red/orange - extremely rare in trading platforms</p>
+
+    <div class="color-swatches">
+      <div class="swatch" style="background: #0f0c0a; border: 1px solid rgba(255,255,255,0.1);">Primary</div>
+      <div class="swatch" style="background: #1c1714;">Secondary</div>
+      <div class="swatch" style="background: #2d2520;">Tertiary</div>
+      <div class="swatch" style="background: #ff6b4a; color: #000;">Primary</div>
+      <div class="swatch" style="background: #ff9b7d; color: #000;">Secondary</div>
+      <div class="swatch" style="background: #ff4757;">Danger</div>
+      <div class="swatch" style="background: #ffb347; color: #000;">Warning</div>
+      <div class="swatch" style="background: #faf6f2; color: #000;">Text</div>
+    </div>
+
+    <div class="elements-grid">
+      <!-- Card -->
+      <div class="card" style="background: #1c1714;">
+        <h3 class="card-title">DCA Ladder Strategy</h3>
+        <p class="card-text">AI-powered dollar-cost averaging with Fibonacci precision. No emotion, just execution.</p>
+        <div style="margin-top: 16px;">
+          <span style="color: #ff6b4a; font-family: 'JetBrains Mono'; font-size: 0.875rem;">+12.4%</span>
+          <span style="opacity: 0.5; margin-left: 8px;">30-day return</span>
+        </div>
+      </div>
+
+      <!-- Buttons & Input -->
+      <div>
+        <button class="btn-primary" style="background: #ff6b4a; color: #0f0c0a;">Join Waitlist</button>
+        <button class="btn-secondary" style="border: 1px solid #ff6b4a; color: #ff6b4a;">Learn More</button>
+        <input type="email" placeholder="Enter your email" style="background: #2d2520; border: 1px solid var(--border); color: #faf6f2;">
+        <input type="email" placeholder="Focused state" style="background: #0f0c0a; border: 1px solid #ff6b4a; box-shadow: 0 0 0 3px rgba(255, 107, 74, 0.15); color: #faf6f2;">
+      </div>
+
+      <!-- Stat Card -->
+      <div class="stat-card" style="background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);">
+        <div class="stat-number" style="color: #ff6b4a;">847</div>
+        <div class="stat-label">Active Traders</div>
+      </div>
+
+      <!-- Badges -->
+      <div>
+        <div class="urgency-badge" style="background: rgba(255, 179, 71, 0.08); border: 1px solid rgba(255, 179, 71, 0.25);">
+          <div class="urgency-dot" style="background: #ffb347;"></div>
+          <span style="font-family: 'JetBrains Mono'; font-size: 0.8125rem; color: #ffb347; text-transform: uppercase; letter-spacing: 0.08em;">Limited Beta Access</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap;">
+          <span class="trust-badge" style="background: #2d2520; border: 1px solid var(--border);">Bank-level Security</span>
+          <span class="trust-badge" style="background: #2d2520; border: 1px solid var(--border);">Real-time Data</span>
+        </div>
+      </div>
+
+      <!-- Ticker -->
+      <div class="ticker" style="background: #1c1714; border: 1px solid var(--border);">
+        <span class="ticker-item positive" style="color: #ff6b4a;">AAPL +2.34%</span>
+        <span class="ticker-item negative" style="color: #ff4757;">TSLA -1.12%</span>
+        <span class="ticker-item positive" style="color: #ff6b4a;">NVDA +4.56%</span>
+        <span class="ticker-item" style="color: #ff9b7d;">BTC $67,432</span>
+      </div>
+
+      <!-- Progress Bar -->
+      <div>
+        <p style="margin-bottom: 8px; font-size: 0.875rem;">Portfolio Allocation</p>
+        <div class="progress-bar" style="background: #2d2520;">
+          <div class="progress-fill" style="background: linear-gradient(90deg, #ff6b4a, #ff9b7d);"></div>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="faq-item" style="background: #1c1714;">
+        <button class="faq-question" style="color: #faf6f2;">
+          How does AI optimization work?
+          <span style="color: #ff6b4a;">+</span>
+        </button>
+        <div class="faq-answer" style="color: #b5a89c;">Our AI analyzes market conditions and adjusts your DCA intervals dynamically.</div>
+      </div>
+    </div>
+  </section>
+
+  <div style="text-align: center; margin-top: 60px; padding: 40px; opacity: 0.5;">
+    <p>Open this file in a browser to compare all four palettes side by side.</p>
+  </div>
+</body>
+</html>
